@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     /// <summary>
     /// Specifies where the parameter is taken from.

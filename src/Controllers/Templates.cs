@@ -1,8 +1,8 @@
-﻿using MMLib.MediatR.Generators.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using AutoApiGen.Helpers;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     internal class Templates
     {

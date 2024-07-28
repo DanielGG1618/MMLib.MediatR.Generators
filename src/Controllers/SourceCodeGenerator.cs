@@ -1,11 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Text;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
 using Scriban.Runtime;
-using System.Text;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     internal class SourceCodeGenerator
     {

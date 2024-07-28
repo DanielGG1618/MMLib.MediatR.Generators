@@ -1,4 +1,4 @@
-﻿namespace MMLib.MediatR.Generators.Controllers
+﻿namespace AutoApiGen.Controllers
 {
     internal static class Types
     {

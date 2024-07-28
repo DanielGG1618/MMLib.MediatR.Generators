@@ -1,12 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-using MMLib.MediatR.Generators.Helpers;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using AutoApiGen.Helpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     [Generator]
     public class ControllersGenerator : ISourceGenerator

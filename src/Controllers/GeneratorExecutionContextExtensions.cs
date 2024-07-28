@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     public static class GeneratorExecutionContextExtensions
     {
@@ -9,7 +9,7 @@ namespace MMLib.MediatR.Generators.Controllers
             id: "MMLG001",
             title: "Missing attribute argument",
             messageFormat: "Argument '{0}' of '{1}Attribute' is required",
-            category: "MMLib.MediatR.Generators",
+            category: "AutoApiGen",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 

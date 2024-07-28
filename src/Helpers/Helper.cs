@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MMLib.MediatR.Generators.Helpers
+namespace AutoApiGen.Helpers
 {
     internal static class Helper
     {

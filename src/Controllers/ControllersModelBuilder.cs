@@ -1,11 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MMLib.MediatR.Generators.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoApiGen.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     internal partial record ControllerModel
     {

@@ -1,9 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using AutoApiGen.Helpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MMLib.MediatR.Generators.Helpers;
-using System.Collections.Generic;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     internal sealed class ControllerReceiver : ISyntaxReceiver
     {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-namespace MMLib.MediatR.Generators.Controllers
+namespace AutoApiGen.Controllers
 {
     internal partial record MethodModel
     {

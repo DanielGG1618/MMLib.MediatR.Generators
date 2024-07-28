@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace System.Runtime.CompilerServices
+namespace AutoApiGen.Helpers
 {
     /// <summary>
     /// Reserved to be used by the compiler for tracking metadata.

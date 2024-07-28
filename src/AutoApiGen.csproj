@@ -2,19 +2,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Version>1.2.0</Version>
     <IsRoslynComponent>true</IsRoslynComponent>
     <BuildOutputTargetFolder>analyzers</BuildOutputTargetFolder>
-    <Authors>Milan Martiniak</Authors>
-    <Company>MMLib</Company>
-    <Description>Source code generator for generating Controller based on MediatR requests.</Description>
-    <PackageProjectUrl>https://github.com/Burgyn/MMLib.MediatR.Generators</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-    <RepositoryUrl>https://github.com/Burgyn/MMLib.MediatR.Generators</RepositoryUrl>
-    <PackageTags>MediatR;generator;helper;asp.net;net.core</PackageTags>
-    <PackageReleaseNotes />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>@MMLib</Copyright>
+    <RootNamespace>AutoApiGen</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="icon.png" Pack="true" PackagePath="" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.10.0-3.final" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
@@ -55,7 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="MMLib.MediatR.Generators.props" Pack="true" PackagePath="build" Visible="false" />
+    <None Include="AutoApiGen.props" Pack="true" PackagePath="build" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Remove="AnalyzerReleases.Unshipped.md" />
   </ItemGroup>
 
   <PropertyGroup>

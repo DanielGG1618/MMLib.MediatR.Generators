@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace MMLib.MediatR.Generators.Helpers
+namespace AutoApiGen.Helpers
 {
     internal static class EmbeddedResource
     {
