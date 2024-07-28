@@ -1,69 +1,97 @@
-﻿using System.IO;
+﻿using AutoApiGen.Extensions;
 using AutoApiGen.Internal;
 using AutoApiGen.Internal.Models;
 using AutoApiGen.Internal.Static;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoApiGen;
 
 [Generator]
-public class ControllersGenerator : ISourceGenerator
+public class ControllersGenerator : IIncrementalGenerator
 {
-    public void Initialize(GeneratorInitializationContext context) =>
-        context.RegisterForSyntaxNotifications(() => new ControllerReceiver());
-
-    public void Execute(GeneratorExecutionContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.AddSource("SourceTypes.cs",
-            SourceText.From(EmbeddedResource.GetContent("Controllers.SourceTypes.cs"), Encoding.UTF8));
+        IncrementalValuesProvider<ClassDeclarationSyntax> provider = context.SyntaxProvider.CreateSyntaxProvider(
+            predicate: static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
+            transform: static (syntaxContext, _) => GetSemanticTargetForGeneration(syntaxContext)
+        ).Where(static syntax => syntax is not null)!;
 
-        if (context.SyntaxReceiver is not ControllerReceiver actorSyntaxReceiver) 
-            return;
-        
-        var builder = ControllerModel.Builder(context);
-        foreach (var candidate in actorSyntaxReceiver.Candidates) 
-            builder.AddCandidate(candidate);
+        var compilation = context.CompilationProvider.Combine(provider.Collect());
 
-        var templates = LoadTemplates(context);
-        foreach (var controller in builder.Build(templates)) 
-            context.AddSource($"{controller.Name}", SourceCodeGenerator.Generate(controller, templates));
+        context.RegisterSourceOutput(compilation, Execute);
     }
 
-    private static Templates LoadTemplates(GeneratorExecutionContext context)
+    private static ClassDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
     {
-        Templates templates = new();
+        if (context.Node is ClassDeclarationSyntax classDeclarationSyntax)
+            return classDeclarationSyntax.AttributeLists
+                .SelectMany(attributeListSyntax =>
+                    attributeListSyntax.Attributes.Select(attributeSyntax =>
+                        context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol as IMethodSymbol
+                    )
+                ).Select(syntax => syntax?.ContainingType)
+                .OfType<INamedTypeSymbol>()
+                .Any() ? classDeclarationSyntax : null;
+        return null;
+    }
 
-        foreach (var file in context.AdditionalFiles)
+    private static void Execute(
+        SourceProductionContext context,
+        (Compilation, ImmutableArray<ClassDeclarationSyntax>) compilationDetails
+    )
+    {
+        var (compilation, classesDeclarationSyntaxes) = compilationDetails;
+
+        /*var codeBuilder = new CodeBuilder();
+        codeBuilder.AppendUsing("Microsoft.AspNetCore.Mvc");
+        codeBuilder.AppendNamespace(nameof(CodeGenerator));*/
+
+        foreach (var classDeclarationSyntax in classesDeclarationSyntaxes)
         {
-            if (!Path.GetExtension(file.Path).Equals(".txt", StringComparison.OrdinalIgnoreCase)) 
-                continue;
-            
-            var options = context.AnalyzerConfigOptions.GetOptions(file);
-            if (!options.TryGetValue("build_metadata.additionalfiles.MMLib_TemplateType", out var type) 
-                || !Enum.TryParse(type, ignoreCase: true, out TemplateType templateType)) 
-                continue;
-            
-            var controllerName = TryGetValue(options, "ControllerName");
-            var template = file.GetText(context.CancellationToken)!.ToString(); //TODO I added ! here !!!
+            var attributeDatas = compilation
+                .GetAttributesOf(classDeclarationSyntax)?
+                .Where(attribute => attribute.AttributeClass?.BaseType?.Name == "EndpointAttribute");
 
-            if (templateType != TemplateType.MethodBody)
+            if (attributeDatas is null)
+                continue;
+
+            foreach (var attributeData in attributeDatas)
             {
-                templates.AddTemplate(templateType, controllerName, template);
-                continue;
-            }
+                var controllerName = attributeData.GetControllerName();
+                //var httpMethodName = attributeData.GetHttpMethodName();
+                var route = attributeData.GetRoute();
+                var methodName = classDeclarationSyntax.GetMethodName();
 
-            var methodType = TryGetValue(options, "MethodType");
-            var methodName = TryGetValue(options, "MethodName");
-            templates.AddMethodBodyTemplate(controllerName, methodType, methodName, template);
+                /*codeBuilder.AppendLine($$"""
+                                         //[ApiController]
+                                         public partial class {{controllerName}} : ControllerBase
+                                         {
+                                             [Http{{httpMethodName}}("{{route}}")]
+                                             public IActionResult {{methodName}}()
+                                             {
+                                                return Ok();
+                                             }
+                                         }
+
+                                         """);*/
+            }
         }
 
-        return templates;
+        context.AddSource("Controllers.g.cs", "codeBuilder".ToString());
     }
 
-    private static string TryGetValue(AnalyzerConfigOptions options, string type)
-        => options.TryGetValue($"build_metadata.additionalfiles.MMLib_{type}", out var value) 
-            ? value 
-            : string.Empty;
+    public void Execute(SourceProductionContext context)
+    {
+        context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
+
+        var templates = LoadTemplates(context);
+        var controller = new ControllerModel(); //should be generated from templates
+        context.AddSource($"{controller.Name}", SourceCodeGenerator.Generate(controller, templates));
+    }
+
+    private static Templates LoadTemplates(SourceProductionContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

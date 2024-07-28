@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AutoApiGen.Internal.Models;
 using AutoApiGen.Internal.Static;
 
@@ -31,7 +30,7 @@ internal class ScribanFunctions : ScriptObject
     )
     {
         parameters = parameters as ParameterModel[] ?? parameters.ToArray();
-        var additionalParameters = parameters.Where(p => p.CanPostInitiateCommand).ToList();
+        var additionalParameters = parameters/*.Where(p => p.CanPostInitiateCommand)*/.ToList();
 
         if (!additionalParameters.Any())
             return string.Empty;

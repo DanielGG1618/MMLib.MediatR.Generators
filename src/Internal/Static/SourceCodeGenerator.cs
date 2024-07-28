@@ -7,7 +7,7 @@ namespace AutoApiGen.Internal.Static;
 
 internal static class SourceCodeGenerator
 {
-    public static SourceText Generate(ControllerModel controller, Templates templates)
+    public static string Generate(ControllerModel controller, Templates templates)
     {
         var output = RenderBody(new
             {
@@ -21,7 +21,7 @@ internal static class SourceCodeGenerator
 
         output = Format(output);
 
-        return SourceText.From(output, Encoding.UTF8);
+        return output;
     }
     
     public static string RenderBody(object body, string? templateSource)
@@ -32,14 +32,13 @@ internal static class SourceCodeGenerator
         return template.Render(context);
     }
 
-    private static string Format(string output)
-    {
-        var tree = CSharpSyntaxTree.ParseText(output);
-        var root = (CSharpSyntaxNode)tree.GetRoot();
-        output = root.NormalizeWhitespace(elasticTrivia: true).ToFullString();
-
-        return output;
-    }
+    private static string Format(string output) =>
+        ((CSharpSyntaxNode)
+            CSharpSyntaxTree
+                .ParseText(output)
+                .GetRoot()
+        ).NormalizeWhitespace(elasticTrivia: true)
+        .ToFullString();
 
     private static string RenderControllerAttributes(ControllerModel controller, Templates templates) =>
         RenderBody(controller, templates.GetControllerTemplate(TemplateType.ControllerAttributes, controller.Name));

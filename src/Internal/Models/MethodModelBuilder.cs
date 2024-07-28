@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 using AutoApiGen.Extensions;
 using Microsoft.CodeAnalysis;
@@ -49,10 +48,7 @@ internal partial record MethodModel
             return templates.GetControllerTemplate(TemplateType.MethodAttributes, controllerName);
 
         var attributes = requestMethod.AttributeLists.SelectMany(a => a.Attributes);
-        var names = string.Join(
-            Environment.NewLine,
-            attributes.Select(b => $"[{b.Name}({b.ArgumentList?.Arguments})]")
-        );
+        var names = string.Join("\n", attributes.Select(b => $"[{b.Name}({b.ArgumentList?.Arguments})]"));
         return names;
     }
 
@@ -143,7 +139,7 @@ internal partial record MethodModel
                 continue;
 
             if (properties.TryGetValue(name, out ITypeSymbol property))
-                parameters.Add(new ParameterModel(name, property.Name, CanPostInitiateCommand: true));
+                parameters.Add(new ParameterModel(name, property.Name));
         }
     }
 
