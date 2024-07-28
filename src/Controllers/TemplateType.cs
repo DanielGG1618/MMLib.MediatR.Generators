@@ -1,12 +1,11 @@
-﻿namespace AutoApiGen.Controllers
+﻿namespace AutoApiGen.Controllers;
+
+public enum TemplateType
 {
-    public enum TemplateType
-    {
-        Controller,
-        ControllerUsings,
-        ControllerAttributes,
-        ControllerBody,
-        MethodBody,
-        MethodAttributes
-    }
+    Controller,
+    ControllerUsings,
+    ControllerAttributes,
+    ControllerBody,
+    MethodBody,
+    MethodAttributes
 }

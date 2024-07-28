@@ -4,45 +4,48 @@ using System.Linq;
 using System.Text;
 using Scriban.Runtime;
 
-namespace AutoApiGen.Controllers
+namespace AutoApiGen.Controllers;
+
+internal class ScribanFunctions: ScriptObject
 {
-    internal class ScribanFunctions : ScriptObject
+    public static string MethodBody(string controllerName, MethodModel method, Templates templates)
+        => SourceCodeGenerator
+            .RenderBody(method, templates.GetMethodBodyTemplate(controllerName, method.HttpMethod, method.Name));
+
+    public static string? GetParameter(IEnumerable<ParameterModel> parameters, string requestType)
     {
-        public static string MethodBody(string controllerName, MethodModel method, Templates templates)
-            => SourceCodeGenerator
-                .RenderBody(method, templates.GetMethodBodyTemplate(controllerName, method.HttpMethod, method.Name));
+        parameters = parameters as ParameterModel[] ?? parameters.ToArray();
+        return parameters.Any()
+            ? GetRequestParameter(parameters, requestType)
+            : $"new {requestType}()";
+    }
 
-        public static string GetParameter(IEnumerable<ParameterModel> parameters, string requestType)
-            => parameters?.Any() == true
-                ? GetRequerstParameter(parameters, requestType)
-                : $"new {requestType}()";
+    private static string? GetRequestParameter(IEnumerable<ParameterModel> parameters, string requestType)
+        => parameters.FirstOrDefault(p =>
+            p.Type.Equals(requestType, StringComparison.CurrentCultureIgnoreCase)
+        )?.Name;
 
-        private static string GetRequerstParameter(IEnumerable<ParameterModel> parameters, string requestType)
-            => parameters?.FirstOrDefault(p
-                => p.Type.Equals(requestType, StringComparison.CurrentCultureIgnoreCase))?.Name;
+    public static string PostInitiate(
+        string request,
+        IEnumerable<ParameterModel> parameters,
+        List<string> requestProperties
+    )
+    {
+        parameters = parameters as ParameterModel[] ?? parameters.ToArray();
+        var additionalParameters = parameters.Where(p => p.CanPostInitiateCommand).ToList();
 
-        public static string PostInitiate(
-            string request,
-            IEnumerable<ParameterModel> parameters,
-            List<string> requestProperties)
+        if (!additionalParameters.Any())
+            return string.Empty;
+
+        var stringBuilder = new StringBuilder();
+        foreach (var parameter in additionalParameters)
         {
-            var additionalParameters = parameters
-                ?.Where(p => p.CanPostInitiateCommand)?.ToList();
-
-            if (additionalParameters?.Any() != true)
-            {
-                return string.Empty;
-            }
-
-            var sb = new StringBuilder();
-            foreach (var parameter in additionalParameters)
-            {
-                var property = requestProperties.First(p =>
-                    p.Equals(parameter.Name, StringComparison.CurrentCultureIgnoreCase));
-                sb.AppendLine($"{GetRequerstParameter(parameters, request)}.{property} = {parameter.Name};");
-            }
-
-            return sb.ToString();
+            var property = requestProperties.First(property =>
+                property.Equals(parameter.Name, StringComparison.CurrentCultureIgnoreCase)
+            );
+            stringBuilder.AppendLine($"{GetRequestParameter(parameters, request)}.{property} = {parameter.Name};");
         }
+
+        return stringBuilder.ToString();
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace AutoApiGen.Helpers
+namespace AutoApiGen.Helpers;
+
+internal static class Helper
 {
-    internal static class Helper
-    {
-        public static string GetAttributeName<TAttribute>() where TAttribute : Attribute
-            => typeof(TAttribute).Name.Replace("Attribute", string.Empty);
-    }
+    public static string GetAttributeName<TAttribute>() where TAttribute : Attribute
+        => typeof(TAttribute).Name.Replace("Attribute", string.Empty);
 }

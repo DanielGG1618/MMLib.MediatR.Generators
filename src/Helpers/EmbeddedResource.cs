@@ -1,12 +1,12 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace AutoApiGen.Helpers
+namespace AutoApiGen.Helpers;
+
+internal static class EmbeddedResource
 {
-    internal static class EmbeddedResource
+    public static string GetContent(string relativePath)
     {
-        public static string GetContent(string relativePath)
-        {
             var assembly = Assembly.GetExecutingAssembly();
             string baseName = assembly.GetName().Name;
             string resourceName = relativePath
@@ -25,5 +25,4 @@ namespace AutoApiGen.Helpers
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
-    }
 }

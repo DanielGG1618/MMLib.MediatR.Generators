@@ -5,66 +5,73 @@ using AutoApiGen.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AutoApiGen.Controllers
+namespace AutoApiGen.Controllers;
+
+internal partial record ControllerModel
 {
-    internal partial record ControllerModel
+    internal static ControllersModelBuilder Builder(GeneratorExecutionContext context)
+        => new(context);
+
+    private static ControllerModel Build(string name,
+        IEnumerable<MethodCandidate> methods,
+        Compilation compilation,
+        Templates templates
+    ) => new()
     {
-        internal static ControllersModelBuilder Builder(GeneratorExecutionContext context)
-            => new(context);
+        Name = name,
+        Namespace = $"{compilation.AssemblyName}.Controllers",
+        Methods = methods.Select(m => MethodModel.Build(m, templates, name))
+    };
+    
+    internal class ControllersModelBuilder
+    {
+        private readonly GeneratorExecutionContext _context;
+        private readonly Compilation _compilation;
+        private readonly Dictionary<string, List<MethodCandidate>> _controllers = new(StringComparer.OrdinalIgnoreCase);
 
-        private static ControllerModel Build(string name,
-            IEnumerable<MethodCandidate> methods,
-            Compilation compilation,
-            Templates templates)
+        public ControllersModelBuilder(GeneratorExecutionContext context)
         {
-            var ret = new ControllerModel()
-            {
-                Name = name,
-                Namespace = $"{compilation.AssemblyName}.Controllers",
-                Methods = methods.Select(m => MethodModel.Build(m, templates, name))
-            };
-
-            return ret;
+            _context = context;
+            _compilation = context.Compilation;
         }
 
-        internal class ControllersModelBuilder
+        public void AddCandidate(TypeDeclarationSyntax candidate)
         {
-            private readonly GeneratorExecutionContext _context;
-            private readonly Compilation _compilation;
-            private readonly Dictionary<string, List<MethodCandidate>> _controllers = new(StringComparer.OrdinalIgnoreCase);
+            var attribute = candidate.GetAttribute(HttpMethods.Attributes);
+            var semanticModel = _compilation.GetSemanticModel(candidate.SyntaxTree);
+            var controllerName = attribute
+                .GetStringArgument(nameof(HttpMethodAttribute.Controller));
 
-            public ControllersModelBuilder(GeneratorExecutionContext context)
+            if (string.IsNullOrWhiteSpace(controllerName))
             {
-                _context = context;
-                _compilation = context.Compilation;
+                _context.ReportMissingArgument(attribute, nameof(HttpMethodAttribute.Controller));
+                return;
             }
 
-            public void AddCandidate(TypeDeclarationSyntax candidate)
-            {
-                var attribute = candidate.GetAttribute(HttpMethods.Attributes);
-                var semanticModel = _compilation.GetSemanticModel(candidate.SyntaxTree);
-                var controllerName = attribute
-                    .GetStringArgument(nameof(HttpMethodAttribute.Controller));
+            controllerName = controllerName.CheckControllerName();
 
-                if (string.IsNullOrWhiteSpace(controllerName))
-                {
-                    _context.ReportMissingArgument(attribute, nameof(HttpMethodAttribute.Controller));
-                    return;
-                }
+            if (!_controllers.ContainsKey(controllerName))
+                _controllers.Add(controllerName, []);
 
-                controllerName = controllerName.CheckControllerName();
-
-                if (!_controllers.ContainsKey(controllerName))
-                {
-                    _controllers.Add(controllerName, new List<MethodCandidate>());
-                }
-
-                var requestType = semanticModel.GetDeclaredSymbol(candidate);
-                _controllers[controllerName].Add(new(attribute, semanticModel, candidate, requestType.ToDisplayString()));
-            }
-
-            public IEnumerable<ControllerModel> Build(Templates templates)
-                => _controllers.Select(p => ControllerModel.Build(p.Key, p.Value, _compilation, templates));
+            var requestType = semanticModel.GetDeclaredSymbol(candidate);
+            _controllers[controllerName].Add(
+                new MethodCandidate(
+                    attribute,
+                    semanticModel,
+                    candidate,
+                    requestType.ToDisplayString()
+                )
+            );
         }
+
+        public IEnumerable<ControllerModel> Build(Templates templates)
+            => _controllers.Select(controller =>
+                ControllerModel.Build(
+                    controller.Key,
+                    controller.Value,
+                    _compilation,
+                    templates
+                )
+            );
     }
 }
