@@ -1,9 +1,9 @@
-﻿using AutoApiGen.Controllers.Internal.Models;
+﻿using AutoApiGen.Internal.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
-namespace AutoApiGen.Controllers.Internal.Static;
+namespace AutoApiGen.Internal.Static;
 
 internal static class SourceCodeGenerator
 {
@@ -24,7 +24,7 @@ internal static class SourceCodeGenerator
         return SourceText.From(output, Encoding.UTF8);
     }
     
-    public static string RenderBody(object body, string templateSource)
+    public static string RenderBody(object body, string? templateSource)
     {
         var template = Template.Parse(templateSource);
         var context = CreateContext(body);

@@ -1,4 +1,4 @@
-﻿namespace AutoApiGen.Controllers;
+﻿namespace AutoApiGen;
 
 /// <summary>
 /// Specifies where the parameter is taken from.

@@ -1,8 +1,8 @@
-﻿namespace AutoApiGen.Controllers.Internal.Models;
+﻿namespace AutoApiGen.Internal.Models;
 
 internal record ParameterModel(
     string Name,
-    string Type,
+    string? Type,
     string Attribute = "",
     bool CanPostInitiateCommand = false
 );

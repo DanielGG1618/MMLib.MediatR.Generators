@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AutoApiGen.Controllers.Internal.Models;
-using AutoApiGen.Controllers.Internal.Static;
+using AutoApiGen.Internal.Models;
+using AutoApiGen.Internal.Static;
 
-namespace AutoApiGen.Controllers.Internal;
+namespace AutoApiGen.Internal;
 
 internal class ScribanFunctions : ScriptObject
 {
@@ -20,8 +20,8 @@ internal class ScribanFunctions : ScriptObject
     }
 
     private static string? GetRequestParameter(IEnumerable<ParameterModel> parameters, string requestType)
-        => parameters.FirstOrDefault(p =>
-            p.Type.Equals(requestType, StringComparison.CurrentCultureIgnoreCase)
+        => parameters.FirstOrDefault(parameter =>
+            parameter.Type?.Equals(requestType, StringComparison.CurrentCultureIgnoreCase) is true
         )?.Name;
 
     public static string PostInitiate(

@@ -4,7 +4,7 @@ using AutoApiGen.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AutoApiGen.Controllers.Internal.Models;
+namespace AutoApiGen.Internal.Models;
 
 internal partial record ControllerModel
 {
@@ -24,15 +24,11 @@ internal partial record ControllerModel
     
     internal class ControllersModelBuilder
     {
-        private readonly GeneratorExecutionContext _context;
         private readonly Compilation _compilation;
         private readonly Dictionary<string, List<MethodCandidate>> _controllers = new(StringComparer.OrdinalIgnoreCase);
 
-        public ControllersModelBuilder(GeneratorExecutionContext context)
-        {
-            _context = context;
+        public ControllersModelBuilder(GeneratorExecutionContext context) =>
             _compilation = context.Compilation;
-        }
 
         public void AddCandidate(TypeDeclarationSyntax candidate)
         {
@@ -43,11 +39,11 @@ internal partial record ControllerModel
 
             if (string.IsNullOrWhiteSpace(controllerName))
             {
-                _context.ReportMissingArgument(attribute, nameof(HttpMethodAttribute.Controller));
+                //_context.ReportMissingArgument(attribute, nameof(HttpMethodAttribute.Controller));
                 return;
             }
 
-            controllerName = controllerName.CheckControllerName();
+            controllerName = controllerName!.ToControllerName();
 
             if (!_controllers.ContainsKey(controllerName))
                 _controllers.Add(controllerName, []);
@@ -58,7 +54,7 @@ internal partial record ControllerModel
                     attribute,
                     semanticModel,
                     candidate,
-                    requestType.ToDisplayString()
+                    requestType?.ToDisplayString()
                 )
             );
         }

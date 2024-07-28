@@ -1,4 +1,4 @@
-﻿namespace AutoApiGen.Controllers;
+﻿namespace AutoApiGen;
 
 public enum TemplateType
 {

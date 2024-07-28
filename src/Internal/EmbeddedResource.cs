@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace AutoApiGen.Helpers;
+namespace AutoApiGen.Internal;
 
 internal static class EmbeddedResource
 {

@@ -1,4 +1,4 @@
-﻿namespace AutoApiGen.Controllers.Internal;
+﻿namespace AutoApiGen.Internal;
 
 internal static class Types
 {

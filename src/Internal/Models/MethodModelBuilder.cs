@@ -2,17 +2,16 @@
 using System.Linq;
 using System.Xml.Linq;
 using AutoApiGen.Extensions;
-using AutoApiGen.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AutoApiGen.Controllers.Internal.Models;
+namespace AutoApiGen.Internal.Models;
 
 internal partial record MethodModel
 {
     private static readonly string AdditionalParametersAttributeName =
-        Helper.GetAttributeName<AdditionalParametersAttribute>();
+        nameof(AdditionalParametersAttribute).Replace(nameof(Attribute), string.Empty);
 
     private const string RequestMethodDefinitionName = "RequestMethodDefinition";
 
@@ -39,7 +38,7 @@ internal partial record MethodModel
         return method;
     }
 
-    private static string GetAttributes(
+    private static string? GetAttributes(
         Templates templates,
         string controllerName,
         TypeDeclarationSyntax typeDeclaration
@@ -57,9 +56,9 @@ internal partial record MethodModel
         return names;
     }
 
-    private static string GetComment(INamedTypeSymbol typeSymbol)
+    private static string? GetComment(INamedTypeSymbol? typeSymbol)
     {
-        var comment = typeSymbol.GetDocumentationCommentXml();
+        var comment = typeSymbol?.GetDocumentationCommentXml();
         return string.IsNullOrWhiteSpace(comment)
             ? null
             : XDocument.Parse(comment)
@@ -67,7 +66,7 @@ internal partial record MethodModel
                 .FirstOrDefault()?.Value.Trim();
     }
 
-    private static string GetTemplate(MethodCandidate candidate)
+    private static string? GetTemplate(MethodCandidate candidate)
         => candidate.HttpMethodAttribute.GetFirstArgumentWithoutName();
 
     private static string GetMethodName(MethodCandidate candidate)
@@ -76,7 +75,7 @@ internal partial record MethodModel
             .GetStringArgument(nameof(HttpGetAttribute.Name));
 
         if (!string.IsNullOrWhiteSpace(name))
-            return name;
+            return name!;
 
         name = candidate.TypeDeclaration.GetTypeName();
         if (candidate.TypeDeclaration.Parent is ClassDeclarationSyntax classDeclaration)
@@ -88,7 +87,7 @@ internal partial record MethodModel
     private static string GetMethodType(MethodCandidate candidate)
         => candidate.HttpMethodAttribute.Name.ToString().Replace(Types.Http, string.Empty);
 
-    private void InitParameters(MethodCandidate candidate, string httpMethod, INamedTypeSymbol typeSymbol)
+    private void InitParameters(MethodCandidate candidate, string httpMethod, INamedTypeSymbol? typeSymbol)
     {
         List<ParameterModel> parameters = [];
         var methodFromSource
@@ -122,7 +121,7 @@ internal partial record MethodModel
     private void InitAdditionalParams(
         MethodCandidate candidate,
         List<ParameterModel> parameters,
-        INamedTypeSymbol typeSymbol
+        INamedTypeSymbol? typeSymbol
     )
     {
         var additionalParamsAttribute = candidate
@@ -132,7 +131,7 @@ internal partial record MethodModel
         if (additionalParamsAttribute is null)
             return;
 
-        var properties = typeSymbol.GetProperties();
+        var properties = typeSymbol?.GetProperties() ?? [];
         RequestProperties.AddRange(properties.Keys);
 
         if (additionalParamsAttribute.ArgumentList?.Arguments is not {} arguments)
@@ -172,8 +171,8 @@ internal partial record MethodModel
         var typeName = string.Empty;
 
         if (
-            candidate?
-                .TypeDeclaration?
+            candidate
+                .TypeDeclaration
                 .BaseList?
                 .Types
                 .FirstOrDefault(

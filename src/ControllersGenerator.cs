@@ -1,13 +1,12 @@
 ﻿using System.IO;
-using AutoApiGen.Controllers.Internal;
-using AutoApiGen.Controllers.Internal.Models;
-using AutoApiGen.Controllers.Internal.Static;
-using AutoApiGen.Helpers;
+using AutoApiGen.Internal;
+using AutoApiGen.Internal.Models;
+using AutoApiGen.Internal.Static;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen;
 
 [Generator]
 public class ControllersGenerator : ISourceGenerator
