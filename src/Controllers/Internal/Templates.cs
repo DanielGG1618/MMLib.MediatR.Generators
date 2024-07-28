@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoApiGen.Helpers;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen.Controllers.Internal;
 
 internal class Templates
 {

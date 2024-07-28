@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AutoApiGen.Controllers;
+﻿namespace AutoApiGen.Controllers;
 
 /// <summary>
 /// Specifies where the parameter is taken from.
@@ -38,13 +36,13 @@ public enum From
     Form,
 
     /// <summary>
-    /// Specifies that an parameter should be bound using the request services.
+    /// Specifies that a parameter should be bound using the request services.
     /// </summary>
     Services
 }
 
 /// <summary>
-/// Base Http mehtod attribute.
+/// Base Http method attribute.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public abstract class HttpMethodAttribute : Attribute

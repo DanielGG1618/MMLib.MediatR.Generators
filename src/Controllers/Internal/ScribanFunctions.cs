@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Scriban.Runtime;
+using AutoApiGen.Controllers.Internal.Models;
+using AutoApiGen.Controllers.Internal.Static;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen.Controllers.Internal;
 
-internal class ScribanFunctions: ScriptObject
+internal class ScribanFunctions : ScriptObject
 {
     public static string MethodBody(string controllerName, MethodModel method, Templates templates)
         => SourceCodeGenerator

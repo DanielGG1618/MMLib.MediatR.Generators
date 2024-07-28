@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using AutoApiGen.Helpers;
+using AutoApiGen.Controllers.Internal.Models;
+using AutoApiGen.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen.Controllers.Internal;
 
 internal sealed class ControllerReceiver : ISyntaxReceiver
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen.Extensions;
 
 public static class GeneratorExecutionContextExtensions
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen.Controllers.Internal.Models;
 
 internal partial record ControllerModel
 {

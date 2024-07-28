@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace AutoApiGen.Controllers;
+namespace AutoApiGen.Controllers.Internal.Models;
 
 internal static class HttpMethods
 {
@@ -11,7 +10,7 @@ internal static class HttpMethods
     public const string Delete = "Delete";
     public const string Patch = "Patch";
 
-    public static readonly ISet<string> Attributes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    public static ISet<string> Attributes { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         HttpMethod(Get),
         HttpMethod(Post),

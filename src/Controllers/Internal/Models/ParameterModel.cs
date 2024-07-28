@@ -1,4 +1,4 @@
-﻿namespace AutoApiGen.Controllers;
+﻿namespace AutoApiGen.Controllers.Internal.Models;
 
 internal record ParameterModel(
     string Name,

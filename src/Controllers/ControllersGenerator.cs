@@ -1,6 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿using System.IO;
+using AutoApiGen.Controllers.Internal;
+using AutoApiGen.Controllers.Internal.Models;
+using AutoApiGen.Controllers.Internal.Static;
 using AutoApiGen.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
