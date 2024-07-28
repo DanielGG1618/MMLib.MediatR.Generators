@@ -1,3 +1,0 @@
-﻿[ApiController]
-[Route("[controller]")]
-[Microsoft.AspNetCore.Authorization.AllowAnonymous()]
