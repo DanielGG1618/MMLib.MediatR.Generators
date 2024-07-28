@@ -1,7 +1,6 @@
 ﻿using AutoApiGen.Internal.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AutoApiGen.Internal.Static;
 
@@ -11,12 +10,12 @@ internal static class SourceCodeGenerator
     {
         var output = RenderBody(new
             {
-                Usings = templates.GetControllerTemplate(TemplateType.ControllerUsings, controller.Name),
+                Usings = templates.Get(TemplateType.ControllerUsings, controller.Name),
                 Attributes = RenderControllerAttributes(controller, templates),
                 Body = RenderControllerBody(controller, templates),
                 Controller = controller
             },
-            templates.GetControllerTemplate(TemplateType.Controller, controller.Name)
+            templates.Get(TemplateType.Controller, controller.Name)
         );
 
         output = Format(output);
@@ -41,7 +40,7 @@ internal static class SourceCodeGenerator
         .ToFullString();
 
     private static string RenderControllerAttributes(ControllerModel controller, Templates templates) =>
-        RenderBody(controller, templates.GetControllerTemplate(TemplateType.ControllerAttributes, controller.Name));
+        RenderBody(controller, templates.Get(TemplateType.ControllerAttributes, controller.Name));
 
     private static string RenderControllerBody(ControllerModel controller, Templates templates) =>
         RenderBody(new
@@ -50,7 +49,7 @@ internal static class SourceCodeGenerator
                 controller.Methods,
                 templates
             },
-            templates.GetControllerTemplate(TemplateType.ControllerBody, controller.Name)
+            templates.Get(TemplateType.ControllerBody, controller.Name)
         );
 
     private static TemplateContext CreateContext(object body)

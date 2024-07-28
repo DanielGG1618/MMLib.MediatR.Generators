@@ -11,15 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Controllers\ControllerTemplate.txt" />
-    <None Remove="Controllers\Templates\ControllerAttributes.txt" />
-    <None Remove="Controllers\Templates\HttpDeleteMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpGetMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpPatchMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpPostMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpPutMethodBody.txt" />
-    <None Remove="Controllers\Templates\Method.txt" />
-    <None Remove="Controllers\UsingTemplate.txt" />
+    <None Remove="Templates\ControllerTemplate.txt" />
+    <None Remove="Templates\ControllerAttributes.txt" />
+    <None Remove="Templates\HttpDeleteMethodBody.txt" />
+    <None Remove="Templates\HttpGetMethodBody.txt" />
+    <None Remove="Templates\HttpPatchMethodBody.txt" />
+    <None Remove="Templates\HttpPostMethodBody.txt" />
+    <None Remove="Templates\HttpPutMethodBody.txt" />
+    <None Remove="Templates\Method.txt" />
+    <None Remove="Templates\UsingTemplate.txt" />
   </ItemGroup>
 
   <ItemGroup>

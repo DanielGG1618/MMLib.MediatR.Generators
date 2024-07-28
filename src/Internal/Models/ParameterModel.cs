@@ -2,6 +2,6 @@
 
 internal record ParameterModel(
     string Name,
-    string? Type,
-    string Attribute = ""
+    string TypeName,
+    IImmutableList<string> AttributeNames
 );

@@ -5,11 +5,9 @@ namespace AutoApiGen.Extensions;
 public static class AttributeDataExtensions
 {
     public static string GetControllerName(this AttributeData attributeData) =>
-        !attributeData.AttributeClass!.IsGenericType
-            ? "Controller"
-            : attributeData.FirstTypeArgument().IsController()
-                ? attributeData.FirstTypeArgument().Name
-                : $"{attributeData.FirstTypeArgument().Name}sController";
+        !attributeData.AttributeClass!.IsGenericType ? "Controller"
+        : attributeData.FirstTypeArgument().IsController() ? attributeData.FirstTypeArgument().Name
+        : $"{attributeData.FirstTypeArgument().Name}sController";
 
     public static string GetRoute(this AttributeData attributeData) =>
         attributeData.GetRouteBase() + attributeData.FirstConstructorArgument().Value;
@@ -25,7 +23,7 @@ public static class AttributeDataExtensions
             : "";
 
     private static TypedConstant FirstConstructorArgument(this AttributeData attributeData) =>
-        attributeData.ConstructorArguments.FirstOrDefault();
+        attributeData.ConstructorArguments.First();
 
     private static ITypeSymbol FirstTypeArgument(this AttributeData attributeData) =>
         attributeData.AttributeClass!.TypeArguments[0];

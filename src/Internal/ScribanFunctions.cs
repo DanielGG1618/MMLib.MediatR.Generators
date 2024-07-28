@@ -6,21 +6,24 @@ namespace AutoApiGen.Internal;
 
 internal class ScribanFunctions : ScriptObject
 {
-    public static string MethodBody(string controllerName, MethodModel method, Templates templates)
-        => SourceCodeGenerator
-            .RenderBody(method, templates.GetMethodBodyTemplate(controllerName, method.HttpMethod, method.Name));
+    public static string MethodBody(string controllerName, MethodModel method, Templates templates) =>
+        SourceCodeGenerator.RenderBody(
+            method,
+            templates.GetMethodBodyTemplate(controllerName, method.HttpMethod, method.Name)
+        );
 
-    public static string? GetParameter(IEnumerable<ParameterModel> parameters, string requestType)
+    public static string? GetParameter(IEnumerable<ParameterModel> parameters, string requestTypeName)
     {
         parameters = parameters as ParameterModel[] ?? parameters.ToArray();
+        
         return parameters.Any()
-            ? GetRequestParameter(parameters, requestType)
-            : $"new {requestType}()";
+            ? GetRequestParameter(parameters, requestTypeName)
+            : $"new {requestTypeName}()";
     }
 
     private static string? GetRequestParameter(IEnumerable<ParameterModel> parameters, string requestType)
         => parameters.FirstOrDefault(parameter =>
-            parameter.Type?.Equals(requestType, StringComparison.CurrentCultureIgnoreCase) is true
+            parameter.TypeName.Equals(requestType, StringComparison.CurrentCultureIgnoreCase)
         )?.Name;
 
     public static string PostInitiate(
