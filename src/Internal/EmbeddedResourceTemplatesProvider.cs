@@ -1,13 +1,12 @@
 ﻿namespace AutoApiGen.Internal;
 
-internal class EmbededResourceTemplatesProvider : ITemplatesProvider
+internal class EmbeddedResourceTemplatesProvider : ITemplatesProvider
 {
     public Template Get(TemplateType type) =>
         Template.Parse(type switch
             {
                 TemplateType.Controller => EmbeddedResource.GetContent("Templates.Controller.txt"),
                 TemplateType.ControllerAttributes => EmbeddedResource.GetContent("Templates.ControllerAttributes.txt"),
-                TemplateType.ControllerUsings => EmbeddedResource.GetContent("Templates.Usings.txt"),
                 TemplateType.ControllerBody => EmbeddedResource.GetContent("Templates.Method.txt"),
                 TemplateType.MethodAttributes => null,
                 TemplateType.MethodBody => null,

@@ -31,7 +31,6 @@
     <EmbeddedResource Include="Templates\HttpPostMethodBody.txt" />
     <EmbeddedResource Include="Templates\HttpPutMethodBody.txt" />
     <EmbeddedResource Include="Templates\Method.txt" />
-    <EmbeddedResource Include="Templates\Usings.txt" />
   </ItemGroup>
 
   <ItemGroup>

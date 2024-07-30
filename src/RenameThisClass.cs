@@ -4,13 +4,14 @@ public static class RenameThisClass
 {
     public static ISet<string> EndpointAttributeNames { get; } = new HashSet<string>
     {
+        "GetEndpointAttribute",
         "GetEndpoint",
-        "PostEndpoint",
-        "PutEndpoint",
-        "DeleteEndpoint",
-        "PatchEndpoint",
-        "HeadEndpoint",
-        "OptionsEndpoint",
-        "TraceEndpoint"
+        "PostEndpointAttribute",
+        "PutEndpointAttribute",
+        "DeleteEndpointAttribute",
+        "PatchEndpointAttribute",
+        "HeadEndpointAttribute",
+        "OptionsEndpointAttribute",
+        "TraceEndpointAttribute"
     };
 }

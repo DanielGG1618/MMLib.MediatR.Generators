@@ -15,11 +15,12 @@ public class ControllersGenerator : IIncrementalGenerator
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
                 node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
-                && @class.HasAttributeWithAnyNameFrom(HttpMethods.AttributeNames),
+                && @class.HasAttributeWithAnyNameFrom(RenameThisClass.EndpointAttributeNames),
             transform: static (syntaxContext, _) => (ClassDeclarationSyntax)syntaxContext.Node
         );
 
-        var compilation = context.CompilationProvider.Combine(provider.Collect());
+        var aaa = provider.Collect();
+        var compilation = context.CompilationProvider.Combine(aaa);
 
         context.RegisterSourceOutput(compilation, Execute);
     }
@@ -31,15 +32,23 @@ public class ControllersGenerator : IIncrementalGenerator
     {
         //context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
 
-        var (compilation, classDeclarationSyntaxes) = compilationDetails;
-        var templatesProviders = new EmbededResourceTemplatesProvider();
+        var (compilation, classes) = compilationDetails;
+        var templatesProviders = new EmbeddedResourceTemplatesProvider();
         var controllers = new Dictionary<string, ControllerModel>();
         
-        foreach (var @class in classDeclarationSyntaxes)
+        foreach (var @class in classes)
         {
+            var controllerName = @class.GetControllerName(compilation, context);
+
+            if (controllers.TryGetValue(controllerName, out var controller))
+                controller = controller with { Name = controllerName };
+            else
+                controller = new ControllerModel(controllerName, []);
+            
+            controllers.Add(controllerName, controller);
         }
         
         foreach (var controller in controllers.Values)
-            context.AddSource($"{controller.Name}", SourceCodeGenerator.Generate(controller, templatesProviders));
+            context.AddSource($"{controller.Name}.g.cs", SourceCodeGenerator.Generate(controller, templatesProviders));
     }
 }

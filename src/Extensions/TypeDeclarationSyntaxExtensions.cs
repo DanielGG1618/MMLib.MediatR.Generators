@@ -14,34 +14,60 @@ internal static class TypeDeclarationSyntaxExtensions
             _ => $"{type.Name()}Method"
         };
 
-    public static string GetControllerName(this TypeDeclarationSyntax type, Compilation compilation)
+    public static string GetControllerName(
+        this TypeDeclarationSyntax type,
+        Compilation compilation,
+        SourceProductionContext context
+    )
     {
         var semanticModel = compilation.GetSemanticModel(type.SyntaxTree);
 
-        var argumentExpression = type.AttributesWithNames(RenameThisClass.EndpointAttributeNames).First()
-            .ArgumentList?.Arguments
-            .First(arg =>
-                arg.GetParameterName(
-                    semanticModel
-                )
-                == "Route"
-            ).Expression;
+        var attributes = type.AttributesWithNames(RenameThisClass.EndpointAttributeNames);
+        attributes = attributes as AttributeSyntax[] ?? attributes.ToArray();
+
+        if (!attributes.Any())
+            return Report(type, context, "attributes are empty");
+
+        var argumentList = attributes.First().ArgumentList;
+        if (argumentList is null or { Arguments: { Count: 0 } })
+            return Report(type, context, "argument list is empty");
+
+        var argumentExpression = argumentList.Arguments.FirstOrDefault(arg =>
+            arg.GetParameterName(semanticModel) is "Route"
+        )?.Expression;
+
+        if (argumentExpression is null)
+            return Report(type, context, "Route argument is null");
 
         return argumentExpression switch
         {
             LiteralExpressionSyntax literal => literal.Token.ValueText,
-            null => throw new NullReferenceException(),
-            _ => ReportDiagnosticAndReturnDefault(argumentExpression)
+            null => Report(type, context), //throw new NullReferenceException(),
+            _ => ReportDiagnosticAndReturnDefault(argumentExpression, context)
         };
 
-        static string ReportDiagnosticAndReturnDefault(ExpressionSyntax expressionSyntax)
+        static string Report(TypeDeclarationSyntax t, SourceProductionContext context, string message = "Random report")
+        {
+            var diagnostic = Diagnostic.Create(
+                DiagnosticDescriptors.ForDebug(message, DiagnosticSeverity.Error),
+                t.GetLocation()
+            );
+
+            context.ReportDiagnostic(diagnostic);
+
+            return string.Empty;
+        }
+
+        static string ReportDiagnosticAndReturnDefault(
+            ExpressionSyntax expressionSyntax,
+            SourceProductionContext context
+        )
         {
             var diagnostic = Diagnostic.Create(
                 DiagnosticDescriptors.LiteralExpressionRequired,
                 expressionSyntax.GetLocation()
             );
 
-            var context = new SourceProductionContext();
             context.ReportDiagnostic(diagnostic);
 
             return string.Empty;
@@ -60,9 +86,7 @@ internal static class TypeDeclarationSyntaxExtensions
     public static bool HasAttributeWithAnyNameFrom(
         this TypeDeclarationSyntax typeDeclaration,
         ISet<string> names
-    ) => typeDeclaration.AttributeLists
-        .SelectMany(WithNames(names))
-        .Any();
+    ) => typeDeclaration.AttributesWithNames(names).Any();
     
     public static AttributeSyntax? AttributeWithName(
         this TypeDeclarationSyntax typeDeclaration,

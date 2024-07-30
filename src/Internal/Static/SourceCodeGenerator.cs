@@ -10,7 +10,6 @@ internal static class SourceCodeGenerator
         Format(
             RenderWithTemplate(new
                 {
-                    Usings = templatesProvider.Get(TemplateType.ControllerUsings),
                     Attributes = RenderControllerAttributes(controller, templatesProvider),
                     Body = RenderControllerBody(controller, templatesProvider),
                     Controller = controller
@@ -47,13 +46,13 @@ internal static class SourceCodeGenerator
 
     private static TemplateContext CreateContext(object body)
     {
-        var context = new TemplateContext();
-
         var scriptObject = new ScriptObject();
         scriptObject.Import(body);
-        context.PushGlobal(scriptObject);
-
+     
         var functions = new ScribanFunctions();
+
+        var context = new TemplateContext();
+        context.PushGlobal(scriptObject);
         context.PushGlobal(functions);
 
         return context;
