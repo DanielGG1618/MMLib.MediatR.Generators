@@ -6,30 +6,21 @@ namespace AutoApiGen.Internal.Static;
 
 internal static class SourceCodeGenerator
 {
-    public static string Generate(ControllerModel controller, Templates templates)
-    {
-        var output = RenderBody(new
-            {
-                Usings = templates.Get(TemplateType.ControllerUsings, controller.Name),
-                Attributes = RenderControllerAttributes(controller, templates),
-                Body = RenderControllerBody(controller, templates),
-                Controller = controller
-            },
-            templates.Get(TemplateType.Controller, controller.Name)
+    public static string Generate(ControllerModel controller, ITemplatesProvider templatesProvider) =>
+        Format(
+            RenderWithTemplate(new
+                {
+                    Usings = templatesProvider.Get(TemplateType.ControllerUsings),
+                    Attributes = RenderControllerAttributes(controller, templatesProvider),
+                    Body = RenderControllerBody(controller, templatesProvider),
+                    Controller = controller
+                },
+                templatesProvider.Get(TemplateType.Controller)
+            )
         );
 
-        output = Format(output);
-
-        return output;
-    }
-    
-    public static string RenderBody(object body, string? templateSource)
-    {
-        var template = Template.Parse(templateSource);
-        var context = CreateContext(body);
-
-        return template.Render(context);
-    }
+    public static string RenderWithTemplate(object obj, Template template) =>
+        template.Render(CreateContext(obj));
 
     private static string Format(string output) =>
         ((CSharpSyntaxNode)
@@ -39,17 +30,19 @@ internal static class SourceCodeGenerator
         ).NormalizeWhitespace(elasticTrivia: true)
         .ToFullString();
 
-    private static string RenderControllerAttributes(ControllerModel controller, Templates templates) =>
-        RenderBody(controller, templates.Get(TemplateType.ControllerAttributes, controller.Name));
+    private static string RenderControllerAttributes(
+        ControllerModel controller,
+        ITemplatesProvider templatesProvider
+    ) => RenderWithTemplate(controller, templatesProvider.Get(TemplateType.ControllerAttributes));
 
-    private static string RenderControllerBody(ControllerModel controller, Templates templates) =>
-        RenderBody(new
+    private static string RenderControllerBody(ControllerModel controller, ITemplatesProvider templatesProvider) =>
+        RenderWithTemplate(new
             {
                 Controller = controller,
                 controller.Methods,
-                templates
+                templates = templatesProvider
             },
-            templates.Get(TemplateType.ControllerBody, controller.Name)
+            templatesProvider.Get(TemplateType.ControllerBody)
         );
 
     private static TemplateContext CreateContext(object body)

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AutoApiGen.Internal.Models;
+﻿namespace AutoApiGen.Internal.Models;
 
 internal static class HttpMethods
 {

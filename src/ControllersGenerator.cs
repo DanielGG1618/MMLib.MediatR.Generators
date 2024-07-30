@@ -15,7 +15,7 @@ public class ControllersGenerator : IIncrementalGenerator
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
                 node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
-                && @class.HaveAttributeWithAnyNameFrom(HttpMethods.AttributeNames),
+                && @class.HasAttributeWithAnyNameFrom(HttpMethods.AttributeNames),
             transform: static (syntaxContext, _) => (ClassDeclarationSyntax)syntaxContext.Node
         );
 
@@ -29,12 +29,17 @@ public class ControllersGenerator : IIncrementalGenerator
         (Compilation, ImmutableArray<ClassDeclarationSyntax>) compilationDetails
     )
     {
-        context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
-        
-        var (compilation, classesDeclarationSyntaxes) = compilationDetails;
+        //context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
 
-        var templates = new Templates();
-        var controller = default(ControllerModel)!; //should be generated from templates
-        context.AddSource($"{controller.Name}", SourceCodeGenerator.Generate(controller, templates));
+        var (compilation, classDeclarationSyntaxes) = compilationDetails;
+        var templatesProviders = new EmbededResourceTemplatesProvider();
+        var controllers = new Dictionary<string, ControllerModel>();
+        
+        foreach (var @class in classDeclarationSyntaxes)
+        {
+        }
+        
+        foreach (var controller in controllers.Values)
+            context.AddSource($"{controller.Name}", SourceCodeGenerator.Generate(controller, templatesProviders));
     }
 }
