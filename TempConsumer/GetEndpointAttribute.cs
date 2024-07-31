@@ -1,11 +1,12 @@
 ﻿namespace TempConsumer;
 
-[GetEndpoint(nameof(A))]
+[GetEndpoint(Route = "Users")]
 public class A;
 
-public class GetEndpointAttribute(string a) : Attribute
+public class GetEndpointAttribute : EndpointAttribute
 {
-    public string A { get; } = a;
-
-    public string B { get; } = a + 2;
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
+    public required string Route { get; init; }
 }
+
+public class EndpointAttribute : Attribute;

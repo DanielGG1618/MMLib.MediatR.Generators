@@ -12,7 +12,8 @@ internal static class SourceCodeGenerator
                 {
                     Attributes = RenderControllerAttributes(controller, templatesProvider),
                     Body = RenderControllerBody(controller, templatesProvider),
-                    Controller = controller
+                    Controller = controller,
+                    controller.BaseRoute
                 },
                 templatesProvider.Get(TemplateType.Controller)
             )

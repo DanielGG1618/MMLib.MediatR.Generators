@@ -9,7 +9,7 @@ namespace AutoApiGen;
 public class ApiAutoGenDiagnosticAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-        [DiagnosticDescriptors.LiteralExpressionRequired];
+        ImmutableArray.Create(DiagnosticDescriptors.LiteralExpressionRequired);
 
     public override void Initialize(AnalysisContext context)
     {
