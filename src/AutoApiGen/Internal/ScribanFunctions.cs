@@ -1,5 +1,7 @@
-﻿using AutoApiGen.Internal.Models;
+﻿using System.Text;
+using AutoApiGen.Internal.Models;
 using AutoApiGen.Internal.Static;
+using Scriban.Runtime;
 
 namespace AutoApiGen.Internal;
 

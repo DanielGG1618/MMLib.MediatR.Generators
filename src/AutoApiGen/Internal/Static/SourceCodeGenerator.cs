@@ -1,6 +1,8 @@
 ﻿using AutoApiGen.Internal.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Scriban;
+using Scriban.Runtime;
 
 namespace AutoApiGen.Internal.Static;
 

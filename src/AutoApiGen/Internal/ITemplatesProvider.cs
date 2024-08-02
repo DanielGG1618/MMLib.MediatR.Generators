@@ -1,4 +1,6 @@
-﻿namespace AutoApiGen.Internal;
+﻿using Scriban;
+
+namespace AutoApiGen.Internal;
 
 internal interface ITemplatesProvider
 {

@@ -1,8 +1,0 @@
-﻿<Project>
-  <ItemGroup>
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="MMLib_TemplateType" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="MMLib_ControllerName" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="MMLib_MethodType" />
-    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="MMLib_MethodName" />
-  </ItemGroup>
-</Project>
