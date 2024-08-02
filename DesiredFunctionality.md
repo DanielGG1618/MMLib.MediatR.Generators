@@ -40,7 +40,7 @@ public class StudentsController(IMediator mediator)
         return Created(result);
     }
     
-    [HttpGet("/students/{id}")]
+    [HttpGet("/students/{id:string}")]
     public async Task<IActionResult> GetStudent(string id)
     {
         var result = await Mediator.Send(query);
@@ -49,3 +49,6 @@ public class StudentsController(IMediator mediator)
     }
 }
 ```
+
+## For Future Thought 
+- Generating custom types in case of mix of route, query, and body parameters
