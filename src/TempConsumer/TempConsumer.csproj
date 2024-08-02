@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\AutoApiGen.csproj"
+        <ProjectReference Include="..\src\AutoApiGen\AutoApiGen.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false" />
     </ItemGroup>

@@ -4,4 +4,4 @@ using Microsoft.AspNetCore.Mvc;
 
 Console.WriteLine(12);
 var mediator = new Mediator(new ServiceContainer());
-ControllerBase a = new TempConsumer.StudentsController(mediator);
+//ControllerBase a = new TempConsumer(mediator);
