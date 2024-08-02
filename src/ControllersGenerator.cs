@@ -1,69 +1,80 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using AutoApiGen.Extensions;
 using AutoApiGen.Internal;
 using AutoApiGen.Internal.Models;
 using AutoApiGen.Internal.Static;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoApiGen;
 
 [Generator]
-public class ControllersGenerator : ISourceGenerator
+public class ControllersGenerator : IIncrementalGenerator
 {
-    public void Initialize(GeneratorInitializationContext context) =>
-        context.RegisterForSyntaxNotifications(() => new ControllerReceiver());
-
-    public void Execute(GeneratorExecutionContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.AddSource("SourceTypes.cs",
-            SourceText.From(EmbeddedResource.GetContent("Controllers.SourceTypes.cs"), Encoding.UTF8));
-
-        if (context.SyntaxReceiver is not ControllerReceiver actorSyntaxReceiver) 
-            return;
-        
-        var builder = ControllerModel.Builder(context);
-        foreach (var candidate in actorSyntaxReceiver.Candidates) 
-            builder.AddCandidate(candidate);
-
-        var templates = LoadTemplates(context);
-        foreach (var controller in builder.Build(templates)) 
-            context.AddSource($"{controller.Name}", SourceCodeGenerator.Generate(controller, templates));
-    }
-
-    private static Templates LoadTemplates(GeneratorExecutionContext context)
-    {
-        Templates templates = new();
-
-        foreach (var file in context.AdditionalFiles)
+        if (!Debugger.IsAttached)
         {
-            if (!Path.GetExtension(file.Path).Equals(".txt", StringComparison.OrdinalIgnoreCase)) 
-                continue;
-            
-            var options = context.AnalyzerConfigOptions.GetOptions(file);
-            if (!options.TryGetValue("build_metadata.additionalfiles.MMLib_TemplateType", out var type) 
-                || !Enum.TryParse(type, ignoreCase: true, out TemplateType templateType)) 
-                continue;
-            
-            var controllerName = TryGetValue(options, "ControllerName");
-            var template = file.GetText(context.CancellationToken)!.ToString(); //TODO I added ! here !!!
-
-            if (templateType != TemplateType.MethodBody)
-            {
-                templates.AddTemplate(templateType, controllerName, template);
-                continue;
-            }
-
-            var methodType = TryGetValue(options, "MethodType");
-            var methodName = TryGetValue(options, "MethodName");
-            templates.AddMethodBodyTemplate(controllerName, methodType, methodName, template);
+            //Debugger.Launch();
         }
+        
+        var provider = context.SyntaxProvider.CreateSyntaxProvider(
+            predicate: static (node, _) =>
+                node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
+                && @class.HasAttributeWithAnyNameFrom(RenameThisClass.EndpointAttributeNames),
+            
+            transform: static (syntaxContext, _) =>
+                /*EndpointHandlerDeclarationSyntax.Wrap*/((ClassDeclarationSyntax)syntaxContext.Node)
+        );
 
-        return templates;
+        var compilation = context.CompilationProvider.Combine(provider.Collect());
+
+        context.RegisterSourceOutput(compilation, Execute);
     }
 
-    private static string TryGetValue(AnalyzerConfigOptions options, string type)
-        => options.TryGetValue($"build_metadata.additionalfiles.MMLib_{type}", out var value) 
-            ? value 
-            : string.Empty;
+    private static void Execute(
+        SourceProductionContext context,
+        (Compilation, ImmutableArray<ClassDeclarationSyntax>) compilationDetails
+    )
+    {
+        context.AddSource("Start.g.cs", "namespace TempConsumer; public interface IStartMarker;");
+        //context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
+
+        var (compilation, classes) = compilationDetails;
+        var templatesProviders = new EmbeddedResourceTemplatesProvider();
+        var controllers = new Dictionary<string, ControllerModel>();
+        
+        foreach (var handler in classes.Select(EndpointHandlerDeclarationSyntax.Wrap))
+        {
+            var controllerName = handler.GetControllerName(compilation);
+            var baseRoute = ""; //TODO this has to be implemented somehow
+            var endpointMethod = new MethodModel(
+                Name: "Method",
+                HttpMethod: "Get",
+                RequestType: "int",
+                ResponseType: "int",
+                Attributes: "",
+                Parameters: [],
+                RequestProperties: []
+            );
+
+            controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
+                ? controller with { Methods = [endpointMethod, ..controller.Methods] }
+                : new ControllerModel(
+                    controllerName,
+                    baseRoute,
+                    [/*endpointMethod*/]
+                );
+        }
+        
+        foreach (var controller in controllers.Values)
+        {
+            context.AddSource(
+                $"{controller.Name}.g.cs",
+                SourceCodeGenerator.Generate(controller, templatesProviders)
+            );
+        }
+        
+        context.AddSource("End.g.cs", "namespace TempConsumer; public interface IEndMarker;");
+    }
 }

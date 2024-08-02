@@ -2,7 +2,6 @@
 
 internal record ParameterModel(
     string Name,
-    string? Type,
-    string Attribute = "",
-    bool CanPostInitiateCommand = false
+    string TypeName,
+    IImmutableList<string> AttributeNames
 );

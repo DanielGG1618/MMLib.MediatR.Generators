@@ -7,5 +7,5 @@ internal record MethodCandidate(
     AttributeSyntax HttpMethodAttribute,
     SemanticModel SemanticModel,
     TypeDeclarationSyntax TypeDeclaration,
-    string? RequestType
+    string RequestType
 );

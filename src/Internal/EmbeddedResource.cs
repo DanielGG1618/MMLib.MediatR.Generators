@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿// Copyright @kzu
+// License MIT
+// copied from https://github.com/devlooped/ThisAssembly/blob/main/src/Shared/EmbeddedResource.cs
+
 using System.Reflection;
 
 namespace AutoApiGen.Internal;
@@ -7,18 +10,31 @@ internal static class EmbeddedResource
 {
     public static string GetContent(string relativePath)
     {
-        var assembly = Assembly.GetExecutingAssembly();
-        string baseName = assembly.GetName().Name;
-        string resourceName = relativePath
+        var baseName = Assembly.GetExecutingAssembly().GetName().Name;
+        
+        var resourceName = relativePath
             .TrimStart('.')
             .Replace(Path.DirectorySeparatorChar, '.')
             .Replace(Path.AltDirectorySeparatorChar, '.');
-        string fullName = $"{baseName}.{resourceName}";
 
-        using var stream = assembly.GetManifestResourceStream(fullName);
+        var manifestResourceName = Assembly
+            .GetExecutingAssembly()
+            .GetManifestResourceNames()
+            .FirstOrDefault(x => x.EndsWith(resourceName, StringComparison.InvariantCulture));
+
+        if (string.IsNullOrEmpty(manifestResourceName))
+            throw new InvalidOperationException(
+                $"Did not find required resource ending in '{resourceName}' in assembly '{baseName}'."
+            );
+
+        using var stream = Assembly
+            .GetExecutingAssembly()
+            .GetManifestResourceStream(manifestResourceName);
 
         if (stream is null)
-            throw new FileNotFoundException($"Resource '{fullName}' doesn't exist.");
+            throw new InvalidOperationException(
+                $"Did not find required resource '{manifestResourceName}' in assembly '{baseName}'."
+            );
 
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();

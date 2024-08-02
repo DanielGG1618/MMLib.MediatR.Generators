@@ -1,68 +1,48 @@
 ﻿using AutoApiGen.Internal.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AutoApiGen.Internal.Static;
 
 internal static class SourceCodeGenerator
 {
-    public static SourceText Generate(ControllerModel controller, Templates templates)
-    {
-        var output = RenderBody(new
-            {
-                Usings = templates.GetControllerTemplate(TemplateType.ControllerUsings, controller.Name),
-                Attributes = RenderControllerAttributes(controller, templates),
-                Body = RenderControllerBody(controller, templates),
-                Controller = controller
-            },
-            templates.GetControllerTemplate(TemplateType.Controller, controller.Name)
+    public static string Generate(ControllerModel controller, ITemplatesProvider templatesProvider) =>
+        Format(
+            RenderWithTemplate(new
+                {
+                    Attributes = RenderControllerAttributes(controller, templatesProvider),
+                    Controller = controller,
+                    controller.BaseRoute
+                },
+                templatesProvider.Get(TemplateType.Controller)
+            )
         );
 
-        output = Format(output);
+    public static string RenderWithTemplate(object obj, Template template) =>
+        template.Render(CreateContext(obj));
 
-        return SourceText.From(output, Encoding.UTF8);
-    }
-    
-    public static string RenderBody(object body, string? templateSource)
-    {
-        var template = Template.Parse(templateSource);
-        var context = CreateContext(body);
+    private static string Format(string output) =>
+        ((CSharpSyntaxNode)
+            CSharpSyntaxTree
+                .ParseText(output)
+                .GetRoot()
+        ).NormalizeWhitespace(elasticTrivia: true)
+        .ToFullString();
 
-        return template.Render(context);
-    }
-
-    private static string Format(string output)
-    {
-        var tree = CSharpSyntaxTree.ParseText(output);
-        var root = (CSharpSyntaxNode)tree.GetRoot();
-        output = root.NormalizeWhitespace(elasticTrivia: true).ToFullString();
-
-        return output;
-    }
-
-    private static string RenderControllerAttributes(ControllerModel controller, Templates templates) =>
-        RenderBody(controller, templates.GetControllerTemplate(TemplateType.ControllerAttributes, controller.Name));
-
-    private static string RenderControllerBody(ControllerModel controller, Templates templates) =>
-        RenderBody(new
-            {
-                Controller = controller,
-                controller.Methods,
-                templates
-            },
-            templates.GetControllerTemplate(TemplateType.ControllerBody, controller.Name)
-        );
+    private static string RenderControllerAttributes(
+        ControllerModel controller,
+        ITemplatesProvider templatesProvider
+    ) => RenderWithTemplate(controller, templatesProvider.Get(TemplateType.ControllerAttributes));
 
     private static TemplateContext CreateContext(object body)
     {
-        var context = new TemplateContext();
-
         var scriptObject = new ScriptObject();
         scriptObject.Import(body);
-        context.PushGlobal(scriptObject);
-
+     
         var functions = new ScribanFunctions();
+
+        var context = new TemplateContext();
+        context.PushGlobal(scriptObject);
         context.PushGlobal(functions);
 
         return context;

@@ -3,7 +3,6 @@
 public enum TemplateType
 {
     Controller,
-    ControllerUsings,
     ControllerAttributes,
     ControllerBody,
     MethodBody,

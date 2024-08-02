@@ -1,2 +1,2 @@
 ﻿[ApiController]
-[Route("[controller]")]
+[Route("{{ base_route }}")]

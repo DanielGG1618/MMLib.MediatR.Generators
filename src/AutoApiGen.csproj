@@ -7,35 +7,35 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RootNamespace>AutoApiGen</RootNamespace>
     <Nullable>enable</Nullable>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Controllers\ControllerTemplate.txt" />
-    <None Remove="Controllers\Templates\ControllerAttributes.txt" />
-    <None Remove="Controllers\Templates\HttpDeleteMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpGetMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpPatchMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpPostMethodBody.txt" />
-    <None Remove="Controllers\Templates\HttpPutMethodBody.txt" />
-    <None Remove="Controllers\Templates\Method.txt" />
-    <None Remove="Controllers\UsingTemplate.txt" />
+    <None Remove="Templates\ControllerTemplate.txt" />
+    <None Remove="Templates\ControllerAttributes.txt" />
+    <None Remove="Templates\HttpDeleteMethodBody.txt" />
+    <None Remove="Templates\HttpGetMethodBody.txt" />
+    <None Remove="Templates\HttpPatchMethodBody.txt" />
+    <None Remove="Templates\HttpPostMethodBody.txt" />
+    <None Remove="Templates\HttpPutMethodBody.txt" />
+    <None Remove="Templates\Method.txt" />
+    <None Remove="Templates\UsingTemplate.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\Controller.txt" />
     <EmbeddedResource Include="Templates\ControllerAttributes.txt" />
-    <EmbeddedResource Include="Templates\HttpDeleteMethodBody.txt" />
-    <EmbeddedResource Include="Templates\HttpGetMethodBody.txt" />
-    <EmbeddedResource Include="Templates\HttpPatchMethodBody.txt" />
-    <EmbeddedResource Include="Templates\HttpPostMethodBody.txt" />
-    <EmbeddedResource Include="Templates\HttpPutMethodBody.txt" />
     <EmbeddedResource Include="Templates\Method.txt" />
-    <EmbeddedResource Include="Templates\Usings.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0-beta1.24318.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0-2.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Scriban" Version="5.10.0" IncludeAssets="Build" />
   </ItemGroup>
