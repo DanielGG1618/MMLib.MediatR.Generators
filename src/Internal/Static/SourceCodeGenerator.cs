@@ -11,7 +11,6 @@ internal static class SourceCodeGenerator
             RenderWithTemplate(new
                 {
                     Attributes = RenderControllerAttributes(controller, templatesProvider),
-                    Body = RenderControllerBody(controller, templatesProvider),
                     Controller = controller,
                     controller.BaseRoute
                 },
@@ -34,16 +33,6 @@ internal static class SourceCodeGenerator
         ControllerModel controller,
         ITemplatesProvider templatesProvider
     ) => RenderWithTemplate(controller, templatesProvider.Get(TemplateType.ControllerAttributes));
-
-    private static string RenderControllerBody(ControllerModel controller, ITemplatesProvider templatesProvider) =>
-        RenderWithTemplate(new
-            {
-                Controller = controller,
-                controller.Methods,
-                templates = templatesProvider
-            },
-            templatesProvider.Get(TemplateType.ControllerBody)
-        );
 
     private static TemplateContext CreateContext(object body)
     {

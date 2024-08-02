@@ -2,5 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-Console.WriteLine(1);
-ControllerBase a = new TempConsumer.UsersController(new Mediator(new ServiceContainer()));
+Console.WriteLine(12);
+var mediator = new Mediator(new ServiceContainer());
+ControllerBase a = new TempConsumer.StudentsController(mediator);

@@ -12,13 +12,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace {{ controller.namespace | string.rstrip }}TempConsumer;
-
+namespace TempConsumer;
 
 {{ attributes }}
 public class {{ controller.name }}(IMediator mediator) : ControllerBase
 {
     private ISender _mediator = mediator;
-
-    {{~ body ~}}
 }

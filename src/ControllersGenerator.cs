@@ -44,23 +44,33 @@ public class ControllersGenerator : IIncrementalGenerator
         var templatesProviders = new EmbeddedResourceTemplatesProvider();
         var controllers = new Dictionary<string, ControllerModel>();
         
-        foreach (var @class in classes.Select(EndpointHandlerDeclarationSyntax.Wrap))
+        foreach (var handler in classes.Select(EndpointHandlerDeclarationSyntax.Wrap))
         {
-            var controllerName = @class.GetControllerName(compilation);
+            var controllerName = handler.GetControllerName(compilation);
+            var baseRoute = ""; //TODO this has to be implemented somehow
+            var endpointMethod = new MethodModel(
+                Name: "Method",
+                HttpMethod: "Get",
+                RequestType: "int",
+                ResponseType: "int",
+                Attributes: "",
+                Parameters: [],
+                RequestProperties: []
+            );
 
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
-                ? controller with { Name = controllerName }
+                ? controller with { Methods = [endpointMethod, ..controller.Methods] }
                 : new ControllerModel(
-                    Name: controllerName + "Controller",
-                    BaseRoute: controllerName, //TODO fix this
-                    ImmutableList<MethodModel>.Empty
+                    controllerName,
+                    baseRoute,
+                    [/*endpointMethod*/]
                 );
         }
-
+        
         foreach (var controller in controllers.Values)
         {
             context.AddSource(
-                $"{controller.Name}Controller.g.cs",
+                $"{controller.Name}.g.cs",
                 SourceCodeGenerator.Generate(controller, templatesProviders)
             );
         }

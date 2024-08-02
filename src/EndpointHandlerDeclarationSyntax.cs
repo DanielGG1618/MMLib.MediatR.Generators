@@ -22,17 +22,15 @@ public class EndpointHandlerDeclarationSyntax
             _ => $"{_class.Name()}Method"
         };
 
-    public string GetControllerName(Compilation compilation)
-    {
-        var attribute = compilation
-            .GetAttributesOf(_class)
-            .First(attribute => attribute.AttributeClass?.BaseType?.Name is "EndpointAttribute");
+    public string GetControllerName(Compilation compilation) =>
+        (compilation
+             .GetAttributesOf(_class)
+             .First(attribute => attribute.AttributeClass?.BaseType?.Name is "EndpointAttribute")
+             .ArgumentOfParameterWithName("Route")
+             .Value?.ToString().WithCapitalFirstLetter()
+         ?? "ThisShitReturnedNull") //TODO
+        + "Controller"; 
 
-        return attribute
-            .ArgumentOfParameterWithName("Route")
-            .Value?.ToString() ?? "ThisShitReturnedNull";
-    }
-    
     private EndpointHandlerDeclarationSyntax(ClassDeclarationSyntax @class) => 
         _class = @class;
 }
