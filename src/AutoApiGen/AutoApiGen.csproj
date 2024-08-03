@@ -5,7 +5,6 @@
     <ImplicitUsings>true</ImplicitUsings>
     <IsRoslynComponent>true</IsRoslynComponent>
     <BuildOutputTargetFolder>analyzers</BuildOutputTargetFolder>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RootNamespace>AutoApiGen</RootNamespace>
     <Nullable>enable</Nullable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
