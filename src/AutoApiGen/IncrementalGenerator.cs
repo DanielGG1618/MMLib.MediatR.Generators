@@ -55,7 +55,14 @@ internal class IncrementalGenerator : IIncrementalGenerator
             );
 
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
-                ? controller with { Methods = [endpointMethod, ..controller.Methods] }
+                ? controller with
+                {
+                    Methods =
+                    [
+                        endpointMethod with { Name = endpointMethod.Name + controller.Methods.Count },
+                        ..controller.Methods
+                    ]
+                }
                 : new ControllerData(
                     baseRoute,
                     controllerName,
