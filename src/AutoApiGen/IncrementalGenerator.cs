@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AutoApiGen.DataObjects;
+﻿using AutoApiGen.DataObjects;
 using AutoApiGen.Extensions;
 using AutoApiGen.TemplatesProcessing;
 using AutoApiGen.Wrappers;
@@ -46,14 +45,21 @@ internal class IncrementalGenerator : IIncrementalGenerator
         { 
             var controllerName = handler.GetControllerName(compilation);
             var baseRoute = ""; //TODO this has to be implemented somehow
-            var endpointMethod = default(MethodData)!;
+            var endpointMethod = new MethodData(
+                "Get",
+                [],
+                "Method",
+                [],
+                "string",
+                "string"
+            );
 
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
                 ? controller with { Methods = [endpointMethod, ..controller.Methods] }
                 : new ControllerData(
                     baseRoute,
                     controllerName,
-                    []
+                    [endpointMethod]
                 );
         }
         
