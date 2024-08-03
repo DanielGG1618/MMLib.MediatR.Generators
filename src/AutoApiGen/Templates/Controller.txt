@@ -19,7 +19,7 @@ public class {{ controller.name }}(IMediator mediator) : ApiControllerBase
 {
     private ISender _mediator = mediator;
     
-    {{- for method in methods }}
+    {{- for method in controller.methods }}
         {{ if method.comment }}
             /// <summary>
             /// {{ method.comment }}

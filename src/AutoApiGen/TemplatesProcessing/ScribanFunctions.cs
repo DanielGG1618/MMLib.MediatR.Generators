@@ -1,32 +1,32 @@
 ﻿using System.Text;
-using AutoApiGen.Models;
+using AutoApiGen.DataObjects;
 using Scriban.Runtime;
 
 namespace AutoApiGen.TemplatesProcessing;
 
 internal class ScribanFunctions : ScriptObject
 {
-    public static string? GetParameter(IEnumerable<ParameterModel> parameters, string requestTypeName)
+    public static string? GetParameter(IEnumerable<ParameterData> parameters, string requestTypeName)
     {
-        parameters = parameters as ParameterModel[] ?? parameters.ToArray();
+        parameters = parameters as ParameterData[] ?? parameters.ToArray();
         
         return parameters.Any()
             ? GetRequestParameter(parameters, requestTypeName)
             : $"new {requestTypeName}()";
     }
 
-    private static string? GetRequestParameter(IEnumerable<ParameterModel> parameters, string requestType)
+    private static string? GetRequestParameter(IEnumerable<ParameterData> parameters, string requestType)
         => parameters.FirstOrDefault(parameter =>
-            parameter.TypeName.Equals(requestType, StringComparison.CurrentCultureIgnoreCase)
+            parameter.Type.Equals(requestType, StringComparison.CurrentCultureIgnoreCase)
         )?.Name;
 
     public static string PostInitiate(
         string request,
-        IEnumerable<ParameterModel> parameters,
+        IEnumerable<ParameterData> parameters,
         List<string> requestProperties
     )
     {
-        parameters = parameters as ParameterModel[] ?? parameters.ToArray();
+        parameters = parameters as ParameterData[] ?? parameters.ToArray();
         var additionalParameters = parameters/*.Where(p => p.CanPostInitiateCommand)*/.ToList();
 
         if (!additionalParameters.Any())

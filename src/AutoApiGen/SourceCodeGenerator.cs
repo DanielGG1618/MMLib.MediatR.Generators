@@ -1,4 +1,4 @@
-﻿using AutoApiGen.Models;
+﻿using AutoApiGen.DataObjects;
 using AutoApiGen.TemplatesProcessing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,7 +9,7 @@ namespace AutoApiGen;
 
 internal static class SourceCodeGenerator
 {
-    public static string Generate(ControllerModel controller, ITemplatesProvider templatesProvider) =>
+    public static string Generate(ControllerData controller, ITemplatesProvider templatesProvider) =>
         Format(
             RenderWithTemplate(new
                 {
@@ -19,14 +19,14 @@ internal static class SourceCodeGenerator
                 templatesProvider.Get()
             )
         );
-
+    
     private static string RenderWithTemplate(object obj, Template template) =>
         template.Render(CreateContext(obj));
 
-    private static string Format(string output) =>
+    private static string Format(string text) =>
         ((CSharpSyntaxNode)
             CSharpSyntaxTree
-                .ParseText(output)
+                .ParseText(text)
                 .GetRoot()
         ).NormalizeWhitespace(elasticTrivia: true)
         .ToFullString();
