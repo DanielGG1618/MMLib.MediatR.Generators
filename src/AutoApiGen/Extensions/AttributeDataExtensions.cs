@@ -2,7 +2,7 @@
 
 namespace AutoApiGen.Extensions;
 
-public static class AttributeDataExtensions
+internal static class AttributeDataExtensions
 {
     public static TypedConstant ArgumentOfParameterWithName(this AttributeData attribute, string name) =>
         attribute.NamedArguments

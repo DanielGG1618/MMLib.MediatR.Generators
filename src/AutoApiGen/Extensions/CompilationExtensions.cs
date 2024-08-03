@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoApiGen.Extensions;
 
-public static class CompilationExtensions
+internal static class CompilationExtensions
 {
     public static ImmutableArray<AttributeData> GetAttributesOf(
         this Compilation compilation,

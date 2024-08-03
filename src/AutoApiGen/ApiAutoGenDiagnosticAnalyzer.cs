@@ -6,10 +6,10 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace AutoApiGen;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class ApiAutoGenDiagnosticAnalyzer : DiagnosticAnalyzer
+internal class ApiAutoGenDiagnosticAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-        ImmutableArray.Create(DiagnosticDescriptors.LiteralExpressionRequired);
+        [DiagnosticDescriptors.LiteralExpressionRequired];
 
     public override void Initialize(AnalysisContext context)
     {

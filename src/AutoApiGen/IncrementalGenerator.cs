@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace AutoApiGen;
 
 [Generator]
-public class ControllersGenerator : IIncrementalGenerator
+internal class IncrementalGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -27,9 +27,9 @@ public class ControllersGenerator : IIncrementalGenerator
                 EndpointHandlerDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
         );
 
-        var compilation = context.CompilationProvider.Combine(provider.Collect());
+        var compilationDetails = context.CompilationProvider.Combine(provider.Collect());
 
-        context.RegisterSourceOutput(compilation, Execute);
+        context.RegisterSourceOutput(compilationDetails, Execute);
     }
 
     private static void Execute(
@@ -38,7 +38,7 @@ public class ControllersGenerator : IIncrementalGenerator
     )
     {
         context.AddSource("Start.g.cs", "namespace TempConsumer; public interface IStartMarker;");
-        //context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
+        context.AddSource("ApiController.g.cs", EmbeddedResource.GetContent("Templates.ApiControllerBase.txt"));
 
         var (compilation, handlers) = compilationDetails;
         var templatesProviders = new EmbeddedResourceTemplatesProvider();
@@ -63,7 +63,7 @@ public class ControllersGenerator : IIncrementalGenerator
                 : new ControllerModel(
                     controllerName,
                     baseRoute,
-                    [/*endpointMethod*/]
+                    [endpointMethod]
                 );
         }
         

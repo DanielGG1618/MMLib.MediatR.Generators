@@ -1,6 +1,6 @@
 ﻿namespace AutoApiGen.Extensions;
 
-public static class StringExtensions
+internal static class StringExtensions
 {
     public static string WithCapitalFirstLetter(this string str) => str.Length switch
     {

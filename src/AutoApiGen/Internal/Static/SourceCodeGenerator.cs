@@ -12,11 +12,10 @@ internal static class SourceCodeGenerator
         Format(
             RenderWithTemplate(new
                 {
-                    Attributes = RenderControllerAttributes(controller, templatesProvider),
                     Controller = controller,
                     controller.BaseRoute
                 },
-                templatesProvider.Get(TemplateType.Controller)
+                templatesProvider.Get()
             )
         );
 
@@ -30,12 +29,7 @@ internal static class SourceCodeGenerator
                 .GetRoot()
         ).NormalizeWhitespace(elasticTrivia: true)
         .ToFullString();
-
-    private static string RenderControllerAttributes(
-        ControllerModel controller,
-        ITemplatesProvider templatesProvider
-    ) => RenderWithTemplate(controller, templatesProvider.Get(TemplateType.ControllerAttributes));
-
+    
     private static TemplateContext CreateContext(object body)
     {
         var scriptObject = new ScriptObject();

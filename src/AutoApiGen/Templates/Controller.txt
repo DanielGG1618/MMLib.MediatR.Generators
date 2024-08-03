@@ -14,8 +14,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TempConsumer;
 
-{{ attributes }}
-public class {{ controller.name }}(IMediator mediator) : ControllerBase
+[Route("{{ base_route }}")]
+public class {{ controller.name }}(IMediator mediator) : ApiControllerBase
 {
     private ISender _mediator = mediator;
+    
+    {{- for method in methods }}
+        {{ if method.comment }}
+            /// <summary>
+            /// {{ method.comment }}
+            /// </summary>
+        {{ end }}
+        {{- for attribute in method.attributes -}}
+            {{ attribute }}
+        {{ end }}
+        public async Task<{{ method.response_type }}> {{ method.name }}(
+        {{- for param in method.parameters -}}
+            {{ param.attributes }} {{ param.type }} {{ param.name }},
+        {{ end }}
+            CancellationToken cancellationToken
+        ) 
+        {
+            //Body will be added later
+        }
+    {{ end }}
 }

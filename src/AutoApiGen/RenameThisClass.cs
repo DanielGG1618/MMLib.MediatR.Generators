@@ -1,6 +1,6 @@
 ﻿namespace AutoApiGen;
 
-public static class RenameThisClass
+internal static class RenameThisClass
 {
     public static ISet<string> EndpointAttributeNames { get; } = new HashSet<string>
     {

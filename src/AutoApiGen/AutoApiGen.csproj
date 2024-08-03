@@ -12,12 +12,10 @@
   
   <ItemGroup>
     <None Remove="Templates\ControllerTemplate.txt" />
-    <None Remove="Templates\ControllerAttributes.txt" />
-    <None Remove="Templates\Method.txt" />
+    <None Remove="Templates\ApiControllerBase.txt" />
   
     <EmbeddedResource Include="Templates\Controller.txt" />
-    <EmbeddedResource Include="Templates\ControllerAttributes.txt" />
-    <EmbeddedResource Include="Templates\Method.txt" />
+    <EmbeddedResource Include="Templates\ApiControllerBase.txt" />
   </ItemGroup>
 
   <ItemGroup>

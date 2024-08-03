@@ -2,7 +2,7 @@
 
 namespace AutoApiGen;
 
-public static class DiagnosticDescriptors
+internal static class DiagnosticDescriptors
 {
     public static DiagnosticDescriptor LiteralExpressionRequired { get; } = new(
         id: "AAG0001",

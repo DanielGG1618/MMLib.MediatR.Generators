@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoApiGen;
 
-public class EndpointHandlerDeclarationSyntax
+internal class EndpointHandlerDeclarationSyntax
 {
     private readonly ClassDeclarationSyntax _class;
 

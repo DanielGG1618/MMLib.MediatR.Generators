@@ -7,12 +7,6 @@ namespace AutoApiGen.Internal;
 
 internal class ScribanFunctions : ScriptObject
 {
-    public static string MethodBody(string controllerName, MethodModel method, ITemplatesProvider templates) =>
-        SourceCodeGenerator.RenderWithTemplate(
-            method,
-            templates.GetMethodBodyTemplate(method.HttpMethod)
-        );
-
     public static string? GetParameter(IEnumerable<ParameterModel> parameters, string requestTypeName)
     {
         parameters = parameters as ParameterModel[] ?? parameters.ToArray();
