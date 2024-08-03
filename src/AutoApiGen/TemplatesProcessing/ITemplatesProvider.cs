@@ -1,6 +1,6 @@
 ﻿using Scriban;
 
-namespace AutoApiGen.Internal;
+namespace AutoApiGen.TemplatesProcessing;
 
 internal interface ITemplatesProvider
 {

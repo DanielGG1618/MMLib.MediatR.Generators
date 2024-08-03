@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace AutoApiGen;
+namespace AutoApiGen.Diagnostics;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 internal class ApiAutoGenDiagnosticAnalyzer : DiagnosticAnalyzer

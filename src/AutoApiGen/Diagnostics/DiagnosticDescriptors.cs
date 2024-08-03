@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace AutoApiGen;
+namespace AutoApiGen.Diagnostics;
 
 internal static class DiagnosticDescriptors
 {

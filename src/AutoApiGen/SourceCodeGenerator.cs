@@ -1,10 +1,11 @@
-﻿using AutoApiGen.Internal.Models;
+﻿using AutoApiGen.Models;
+using AutoApiGen.TemplatesProcessing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Scriban;
 using Scriban.Runtime;
 
-namespace AutoApiGen.Internal.Static;
+namespace AutoApiGen;
 
 internal static class SourceCodeGenerator
 {
@@ -19,7 +20,7 @@ internal static class SourceCodeGenerator
             )
         );
 
-    public static string RenderWithTemplate(object obj, Template template) =>
+    private static string RenderWithTemplate(object obj, Template template) =>
         template.Render(CreateContext(obj));
 
     private static string Format(string output) =>

@@ -1,9 +1,8 @@
 ﻿using System.Text;
-using AutoApiGen.Internal.Models;
-using AutoApiGen.Internal.Static;
+using AutoApiGen.Models;
 using Scriban.Runtime;
 
-namespace AutoApiGen.Internal;
+namespace AutoApiGen.TemplatesProcessing;
 
 internal class ScribanFunctions : ScriptObject
 {

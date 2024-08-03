@@ -4,7 +4,7 @@
 
 using System.Reflection;
 
-namespace AutoApiGen.Internal;
+namespace AutoApiGen.TemplatesProcessing;
 
 internal static class EmbeddedResource
 {

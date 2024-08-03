@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using AutoApiGen.Extensions;
-using AutoApiGen.Internal;
-using AutoApiGen.Internal.Models;
-using AutoApiGen.Internal.Static;
+using AutoApiGen.Models;
+using AutoApiGen.TemplatesProcessing;
+using AutoApiGen.Wrappers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

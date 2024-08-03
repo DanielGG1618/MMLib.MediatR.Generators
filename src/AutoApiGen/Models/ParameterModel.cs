@@ -1,4 +1,4 @@
-﻿namespace AutoApiGen.Internal.Models;
+﻿namespace AutoApiGen.Models;
 
 internal record ParameterModel(
     string Name,
