@@ -24,7 +24,7 @@ public class ControllersGenerator : IIncrementalGenerator
                 && @class.HasAttributeWithAnyNameFrom(RenameThisClass.EndpointAttributeNames),
             
             transform: static (syntaxContext, _) =>
-                /*EndpointHandlerDeclarationSyntax.Wrap*/((ClassDeclarationSyntax)syntaxContext.Node)
+                EndpointHandlerDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
         );
 
         var compilation = context.CompilationProvider.Combine(provider.Collect());
@@ -34,17 +34,17 @@ public class ControllersGenerator : IIncrementalGenerator
 
     private static void Execute(
         SourceProductionContext context,
-        (Compilation, ImmutableArray<ClassDeclarationSyntax>) compilationDetails
+        (Compilation, ImmutableArray<EndpointHandlerDeclarationSyntax>) compilationDetails
     )
     {
         context.AddSource("Start.g.cs", "namespace TempConsumer; public interface IStartMarker;");
         //context.AddSource("SourceTypes.cs", EmbeddedResource.GetContent("Controllers.SourceTypes.cs"));
 
-        var (compilation, classes) = compilationDetails;
+        var (compilation, handlers) = compilationDetails;
         var templatesProviders = new EmbeddedResourceTemplatesProvider();
         var controllers = new Dictionary<string, ControllerModel>();
         
-        foreach (var handler in classes.Select(EndpointHandlerDeclarationSyntax.Wrap))
+        foreach (var handler in handlers)
         {
             var controllerName = handler.GetControllerName(compilation);
             var baseRoute = ""; //TODO this has to be implemented somehow
