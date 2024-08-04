@@ -12,8 +12,9 @@ internal class EndpointContractDeclarationSyntax
     {
         //TODO add validation logic if possible
         //such a class should 
-        // - implement mediator IRequest
-        // - be a command or query
+        // - [ ] have exactly one attribute with name from EndpointAttributeNames
+        // - [ ] implement mediator IRequest
+        // - [ ] be a command or query
         return new EndpointContractDeclarationSyntax(@class);
     }
     
@@ -28,9 +29,6 @@ internal class EndpointContractDeclarationSyntax
             ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
             : "ThisShitReturnedNull"; //TODO
 
-    private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class) => 
-        _class = @class;
-
     public string GetMethodName()
     {
         if (_class.Parent is TypeDeclarationSyntax type)
@@ -42,4 +40,7 @@ internal class EndpointContractDeclarationSyntax
             ? className.Remove(className.Length - matchingSuffix.Length)
             : className;
     }
+
+    private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class) => 
+        _class = @class;
 }
