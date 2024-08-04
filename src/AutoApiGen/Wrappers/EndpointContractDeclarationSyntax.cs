@@ -37,14 +37,12 @@ internal class EndpointContractDeclarationSyntax
     
     //TODO add static method for validation
 
-    public string GetControllerName() =>
-        _type.AttributeLists.SelectMany(list => list.Attributes)
-            .Single(attr =>
-                EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
-            ).ArgumentList?.Arguments
-            .First().Expression is LiteralExpressionSyntax literal
-            ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
-            : "ThisShitReturnedNull"; //TODO
+    public string GetHttpMethod()
+    {
+        var name = Attribute.Name.NameOrDefault();
+
+        return name.Remove(name.Length - "Endpoint".Length);
+    }
 
     public string GetMethodName()
     {
@@ -57,10 +55,20 @@ internal class EndpointContractDeclarationSyntax
             ? className.Remove(className.Length - matchingSuffix.Length)
             : className;
     }
-
+    
+    public string GetControllerName() =>
+        _type.AttributeLists.SelectMany(list => list.Attributes)
+            .Single(attr =>
+                EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+            ).ArgumentList?.Arguments
+            .First().Expression is LiteralExpressionSyntax literal
+            ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
+            : "ThisShitReturnedNull"; //TODO
+    
     private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, AttributeSyntax attribute)
     {
         _type = type;
         Attribute = attribute;
     }
+
 }

@@ -14,7 +14,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TempConsumer;
 
-[Route("{{ base_route }}")]
+{{- if base_route != "" -}}
+    [Route("{{ base_route }}")]
+{{- end -}}
 public class {{ controller.name }}(IMediator mediator) : ApiControllerBase
 {
     private ISender _mediator = mediator;
@@ -28,6 +30,7 @@ public class {{ controller.name }}(IMediator mediator) : ApiControllerBase
         {{- for attribute in method.attributes -}}
             {{ attribute }}
         {{ end }}
+        [Http{{ method.http_method }}]
         public async Task<IActionResult> {{ method.name }}(
         {{- for param in method.parameters -}}
             {{ param.attributes }} {{ param.type }} {{ param.name }},
