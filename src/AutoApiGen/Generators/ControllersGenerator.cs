@@ -6,15 +6,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static AutoApiGen.StaticData;
 
-namespace AutoApiGen;
+namespace AutoApiGen.Generators;
 
 [Generator]
-internal class IncrementalGenerator : IIncrementalGenerator
+internal class ControllersGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        //if (!Debugger.IsAttached) Debugger.Launch();
-        
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
                 node is TypeDeclarationSyntax { AttributeLists.Count: > 0 } @class
@@ -36,10 +34,6 @@ internal class IncrementalGenerator : IIncrementalGenerator
     {
         var templatesProviders = new EmbeddedResourceTemplatesProvider();
         var (compilation, endpoints) = compilationDetails;
-        
-        context.AddSource("Start.g.cs", "namespace TempConsumer; public interface IStartMarker;");
-        context.AddSource("ApiController.g.cs", EmbeddedResource.GetContent("Templates.ApiControllerBase.txt"));
-        context.AddSource("EndpointAttributes.g.cs", EmbeddedResource.GetContent("Templates.EndpointAttributes.txt"));
         
         var controllers = new Dictionary<string, ControllerData>();
         
@@ -73,7 +67,5 @@ internal class IncrementalGenerator : IIncrementalGenerator
                 SourceCodeGenerator.Generate(controller, templatesProviders)
             );
         }
-        
-        context.AddSource("End.g.cs", "namespace TempConsumer; public interface IEndMarker;");
     }
 }

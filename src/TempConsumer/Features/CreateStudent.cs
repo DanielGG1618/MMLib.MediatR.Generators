@@ -16,9 +16,4 @@ public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Studen
 
         return Task.FromResult(new Student(name));
     }
-
-    public void ForbiddenMethod()
-    {
-        
-    }
 }
