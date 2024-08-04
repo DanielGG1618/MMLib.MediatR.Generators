@@ -29,10 +29,11 @@ public class GetStudentHandler : IQueryHandler<GetStudentQuery, Student>
 
 ## Generates
 ```csharp
+[Route("students")]
 public class StudentsController(IMediator mediator) 
     : ApiController(mediator)
 {
-    [HttpPost("/students")]
+    [HttpPost]
     public async Task<IActionResult> CreateStudent([FromBody] CreateStudentCommand command)
     {
         var result = await Mediator.Send(command);
@@ -40,7 +41,7 @@ public class StudentsController(IMediator mediator)
         return Created(result);
     }
     
-    [HttpGet("/students/{id:string}")]
+    [HttpGet("{id:string}")]
     public async Task<IActionResult> GetStudent(string id)
     {
         var result = await Mediator.Send(query);

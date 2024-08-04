@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using TempConsumer.CodeThatShouldBeGenerated;
+using AutoApiGen.Attributes;
 
 namespace TempConsumer.Features;
 
 public record GetStudentQuery(string Name) : IRequest<Student>;
 
-[GetEndpoint(Route = "students")] //Fails if '/' is there 
+[GetEndpoint("students")] //Fails if '/' is there 
 public class GetStudentHandler : IRequestHandler<GetStudentQuery, Student>
 {
     public Task<Student> Handle(GetStudentQuery query, CancellationToken cancellationToken)

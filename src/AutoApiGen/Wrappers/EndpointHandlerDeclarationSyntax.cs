@@ -22,14 +22,14 @@ internal class EndpointHandlerDeclarationSyntax
             _ => $"{_class.Name()}Method"
         };
 
-    public string GetControllerName(Compilation compilation) =>
-        (compilation
-             .GetAttributesOf(_class)
-             .First(attribute => attribute.AttributeClass?.BaseType?.Name is "EndpointAttribute")
-             .ArgumentOfParameterWithName("Route")
-             .Value?.ToString().WithCapitalFirstLetter()
-         ?? "ThisShitReturnedNull") //TODO
-        + "Controller"; 
+    public string GetControllerName() =>
+        _class.AttributeLists.SelectMany(list => list.Attributes)
+            .Single(attr =>
+                RenameThisClass.EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+            ).ArgumentList?.Arguments
+            .First().Expression is LiteralExpressionSyntax literal
+            ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
+            : "ThisShitReturnedNull"; //TODO
 
     private EndpointHandlerDeclarationSyntax(ClassDeclarationSyntax @class) => 
         _class = @class;

@@ -13,9 +13,11 @@
   <ItemGroup>
     <None Remove="Templates\ControllerTemplate.txt" />
     <None Remove="Templates\ApiControllerBase.txt" />
+    <None Remove="Templates\EndpointAttributes.txt" />
   
     <EmbeddedResource Include="Templates\Controller.txt" />
     <EmbeddedResource Include="Templates\ApiControllerBase.txt" />
+    <EmbeddedResource Include="Templates\EndpointAttributes.txt" />
   </ItemGroup>
 
   <ItemGroup>

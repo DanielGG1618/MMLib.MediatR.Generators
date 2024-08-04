@@ -38,20 +38,21 @@ internal class IncrementalGenerator : IIncrementalGenerator
         
         context.AddSource("Start.g.cs", "namespace TempConsumer; public interface IStartMarker;");
         context.AddSource("ApiController.g.cs", EmbeddedResource.GetContent("Templates.ApiControllerBase.txt"));
+        context.AddSource("EndpointAttributes.g.cs", EmbeddedResource.GetContent("Templates.EndpointAttributes.txt"));
         
         var controllers = new Dictionary<string, ControllerData>();
         
         foreach (var handler in handlers)
         { 
-            var controllerName = handler.GetControllerName(compilation);
+            var controllerName = handler.GetControllerName();
             var baseRoute = ""; //TODO this has to be implemented somehow
             var endpointMethod = new MethodData(
-                "Get",
-                [],
-                "Method",
-                [],
-                "string",
-                "string"
+                HttpMethod: "Get",
+                Attributes: [],
+                Name: "Method",
+                Parameters: [],
+                RequestType: "string",
+                ResponseType: "string"
             );
 
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
