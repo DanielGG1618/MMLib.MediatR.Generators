@@ -21,7 +21,7 @@ internal class EndpointContractDeclarationSyntax
     public string GetControllerName() =>
         _class.AttributeLists.SelectMany(list => list.Attributes)
             .Single(attr =>
-                RenameThisClass.EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+                StaticData.EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
             ).ArgumentList?.Arguments
             .First().Expression is LiteralExpressionSyntax literal
             ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"

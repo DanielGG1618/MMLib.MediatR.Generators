@@ -1,6 +1,6 @@
 ﻿namespace AutoApiGen;
 
-internal static class RenameThisClass
+internal static class StaticData
 {
     public static ISet<string> EndpointAttributeNames { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
@@ -8,9 +8,8 @@ internal static class RenameThisClass
         "PostEndpoint",
         "PutEndpoint",
         "DeleteEndpoint",
-        "PatchEndpoint",
         "HeadEndpoint",
+        "PatchEndpoint",
         "OptionsEndpoint",
-        "TraceEndpoint"
     };
 }
