@@ -1,26 +1,22 @@
 ﻿using AutoApiGen.Extensions;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoApiGen.Wrappers;
 
-internal class EndpointHandlerDeclarationSyntax
+internal class EndpointContractDeclarationSyntax
 {
     private readonly ClassDeclarationSyntax _class;
 
-    public static EndpointHandlerDeclarationSyntax Wrap(ClassDeclarationSyntax @class)
+    public static EndpointContractDeclarationSyntax Wrap(ClassDeclarationSyntax @class)
     {
         //TODO add validation logic if possible
-        return new EndpointHandlerDeclarationSyntax(@class);
+        //such a class should 
+        // - implement mediator IRequest
+        // - be a command or query
+        return new EndpointContractDeclarationSyntax(@class);
     }
-
-    public string GetEndpointMethodName() =>
-        _class.Parent switch
-        {
-            TypeDeclarationSyntax parentType => parentType.Name(),
-            NamespaceDeclarationSyntax @namespace => $"{@namespace.Name.NameOrDefault()}_{_class.Name()}",
-            _ => $"{_class.Name()}Method"
-        };
+    
+    //TODO add static method for validation
 
     public string GetControllerName() =>
         _class.AttributeLists.SelectMany(list => list.Attributes)
@@ -31,6 +27,6 @@ internal class EndpointHandlerDeclarationSyntax
             ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
             : "ThisShitReturnedNull"; //TODO
 
-    private EndpointHandlerDeclarationSyntax(ClassDeclarationSyntax @class) => 
+    private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class) => 
         _class = @class;
 }

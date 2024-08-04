@@ -20,7 +20,7 @@ internal class IncrementalGenerator : IIncrementalGenerator
                 && @class.HasAttributeWithAnyNameFrom(RenameThisClass.EndpointAttributeNames),
             
             transform: static (syntaxContext, _) =>
-                EndpointHandlerDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
+                EndpointContractDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
         );
 
         var compilationDetails = context.CompilationProvider.Combine(provider.Collect());
@@ -30,7 +30,7 @@ internal class IncrementalGenerator : IIncrementalGenerator
 
     private static void Execute(
         SourceProductionContext context,
-        (Compilation, ImmutableArray<EndpointHandlerDeclarationSyntax>) compilationDetails
+        (Compilation, ImmutableArray<EndpointContractDeclarationSyntax>) compilationDetails
     )
     {
         var templatesProviders = new EmbeddedResourceTemplatesProvider();
