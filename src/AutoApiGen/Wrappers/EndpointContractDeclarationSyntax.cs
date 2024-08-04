@@ -1,5 +1,6 @@
 ﻿using AutoApiGen.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static AutoApiGen.StaticData;
 
 namespace AutoApiGen.Wrappers;
 
@@ -21,7 +22,7 @@ internal class EndpointContractDeclarationSyntax
     public string GetControllerName() =>
         _class.AttributeLists.SelectMany(list => list.Attributes)
             .Single(attr =>
-                StaticData.EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+                EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
             ).ArgumentList?.Arguments
             .First().Expression is LiteralExpressionSyntax literal
             ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
@@ -29,4 +30,16 @@ internal class EndpointContractDeclarationSyntax
 
     private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class) => 
         _class = @class;
+
+    public string GetMethodName()
+    {
+        if (_class.Parent is TypeDeclarationSyntax type)
+            return type.Name();
+
+        var className = _class.Name();
+        
+        return Suffixes.SingleOrDefault(suffix => className.EndsWith(suffix)) is { } matchingSuffix
+            ? className.Remove(className.Length - matchingSuffix.Length)
+            : className;
+    }
 }

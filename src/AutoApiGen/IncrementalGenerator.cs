@@ -4,6 +4,7 @@ using AutoApiGen.TemplatesProcessing;
 using AutoApiGen.Wrappers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static AutoApiGen.StaticData;
 
 namespace AutoApiGen;
 
@@ -17,7 +18,7 @@ internal class IncrementalGenerator : IIncrementalGenerator
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
                 node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
-                && @class.HasAttributeWithAnyNameFrom(StaticData.EndpointAttributeNames),
+                && @class.HasAttributeWithAnyNameFrom(EndpointAttributeNames),
             
             transform: static (syntaxContext, _) =>
                 EndpointContractDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
@@ -34,7 +35,7 @@ internal class IncrementalGenerator : IIncrementalGenerator
     )
     {
         var templatesProviders = new EmbeddedResourceTemplatesProvider();
-        var (compilation, handlers) = compilationDetails;
+        var (compilation, endpoints) = compilationDetails;
         
         context.AddSource("Start.g.cs", "namespace TempConsumer; public interface IStartMarker;");
         context.AddSource("ApiController.g.cs", EmbeddedResource.GetContent("Templates.ApiControllerBase.txt"));
@@ -42,32 +43,26 @@ internal class IncrementalGenerator : IIncrementalGenerator
         
         var controllers = new Dictionary<string, ControllerData>();
         
-        foreach (var handler in handlers)
+        foreach (var endpoint in endpoints)
         { 
-            var controllerName = handler.GetControllerName();
+            var controllerName = endpoint.GetControllerName();
+            var methodName = endpoint.GetMethodName();
             var baseRoute = ""; //TODO this has to be implemented somehow
-            var endpointMethod = new MethodData(
+            var method = new MethodData(
                 HttpMethod: "Get",
                 Attributes: [],
-                Name: "Method",
+                Name: methodName,
                 Parameters: [],
                 RequestType: "string",
                 ResponseType: "string"
             );
 
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
-                ? controller with
-                {
-                    Methods =
-                    [
-                        endpointMethod with { Name = endpointMethod.Name + controller.Methods.Count },
-                        ..controller.Methods
-                    ]
-                }
+                ? controller with { Methods = [method, ..controller.Methods] }
                 : new ControllerData(
                     baseRoute,
                     controllerName,
-                    [endpointMethod]
+                    [method]
                 );
         }
         
