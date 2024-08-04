@@ -1,4 +1,5 @@
-﻿using AutoApiGen.Extensions;
+﻿using System.Diagnostics;
+using AutoApiGen.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static AutoApiGen.StaticData;
 
@@ -6,28 +7,38 @@ namespace AutoApiGen.Wrappers;
 
 internal class EndpointContractDeclarationSyntax
 {
-    private readonly ClassDeclarationSyntax _class;
-    private readonly AttributeSyntax _attribute;
+    private readonly TypeDeclarationSyntax _type;
+    
+    public AttributeSyntax Attribute { get; }
 
-    public static EndpointContractDeclarationSyntax Wrap(ClassDeclarationSyntax @class)
+    public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type)
     {
         //TODO add validation logic if possible
         //such a class should 
         // - [x] have exactly one attribute with name from EndpointAttributeNames
-        // - [ ] implement mediator IRequest
-        // - [ ] be a command or query
+        // - [x] implement mediator IRequest
 
-        var attribute = @class.Attributes().Single(attr =>
+        var attribute = type.Attributes().Single(attr =>
             EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
         );
+        
+        var a = type.BaseList?.Types.Select(baseType => baseType.Type);
 
-        return new EndpointContractDeclarationSyntax(@class, attribute);
+        if (type.BaseList?.Types.Any(baseType =>
+                baseType.Type is SimpleNameSyntax
+                {
+                    Identifier.Text: "IRequest" or "ICommand" or "IQuery"
+                }
+            ) is false)
+            throw new InvalidOperationException("Endpoint contract should implement IRequest");
+
+        return new EndpointContractDeclarationSyntax(type, attribute);
     }
     
     //TODO add static method for validation
 
     public string GetControllerName() =>
-        _class.AttributeLists.SelectMany(list => list.Attributes)
+        _type.AttributeLists.SelectMany(list => list.Attributes)
             .Single(attr =>
                 EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
             ).ArgumentList?.Arguments
@@ -37,19 +48,19 @@ internal class EndpointContractDeclarationSyntax
 
     public string GetMethodName()
     {
-        if (_class.Parent is TypeDeclarationSyntax type)
+        if (_type.Parent is TypeDeclarationSyntax type)
             return type.Name();
 
-        var className = _class.Name();
+        var className = _type.Name();
         
         return Suffixes.SingleOrDefault(suffix => className.EndsWith(suffix)) is { } matchingSuffix
             ? className.Remove(className.Length - matchingSuffix.Length)
             : className;
     }
 
-    private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class, AttributeSyntax attribute)
+    private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, AttributeSyntax attribute)
     {
-        _class = @class;
-        _attribute = attribute;
+        _type = type;
+        Attribute = attribute;
     }
 }

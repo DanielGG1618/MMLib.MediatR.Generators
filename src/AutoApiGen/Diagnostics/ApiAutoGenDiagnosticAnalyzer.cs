@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Diagnostics;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -9,29 +10,30 @@ namespace AutoApiGen.Diagnostics;
 internal class ApiAutoGenDiagnosticAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-        [DiagnosticDescriptors.LiteralExpressionRequired];
+    [
+        DiagnosticDescriptors.LiteralExpressionRequired,
+        DiagnosticDescriptors.ForDebug
+    ];
 
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.MethodDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.RecordDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.ClassDeclaration);
     }
 
-    //TODO make this useful
     private static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
     {
-        var methodDeclaration = (MethodDeclarationSyntax)context.Node;
-
-        if (methodDeclaration.Identifier.Text is not "ForbiddenMethod")
+        /*if (context.Node is not TypeDeclarationSyntax type)
             return;
-
+        
         var diagnostic = Diagnostic.Create(
-            DiagnosticDescriptors.LiteralExpressionRequired,
-            methodDeclaration.Identifier.GetLocation(),
-            methodDeclaration.Identifier.Text
+            DiagnosticDescriptors.ForDebug,
+            type.Identifier.GetLocation(),
+            type.BaseList?.Types.Select(baseType => (baseType.Type as SimpleNameSyntax)?.Identifier.Text).FirstOrDefault() ?? "null"
         );
 
-        context.ReportDiagnostic(diagnostic);
+        context.ReportDiagnostic(diagnostic);*/
     }
 }

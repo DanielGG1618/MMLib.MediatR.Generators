@@ -17,11 +17,11 @@ internal class IncrementalGenerator : IIncrementalGenerator
         
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
-                node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
+                node is TypeDeclarationSyntax { AttributeLists.Count: > 0 } @class
                 && @class.HasAttributeWithNameFrom(EndpointAttributeNames),
             
             transform: static (syntaxContext, _) =>
-                EndpointContractDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
+                EndpointContractDeclarationSyntax.Wrap((TypeDeclarationSyntax)syntaxContext.Node)
         );
 
         var compilationDetails = context.CompilationProvider.Combine(provider.Collect());

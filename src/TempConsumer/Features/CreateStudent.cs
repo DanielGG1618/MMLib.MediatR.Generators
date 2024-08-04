@@ -5,9 +5,9 @@ namespace TempConsumer.Features;
 
 public record Student(string Name);
 
+[PostEndpoint("students")] //Fails if '/' is there 
 public record CreateStudentCommand(string Name) : IRequest<Student>;
 
-[PostEndpoint("students")] //Fails if '/' is there 
 public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Student>
 {
     public Task<Student> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
@@ -15,5 +15,10 @@ public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Studen
         var name = command.Name;
 
         return Task.FromResult(new Student(name));
+    }
+
+    public void ForbiddenMethod()
+    {
+        
     }
 }

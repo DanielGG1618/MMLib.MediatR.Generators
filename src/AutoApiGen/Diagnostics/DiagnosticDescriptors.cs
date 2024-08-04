@@ -13,15 +13,12 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true
     );
 
-    public static DiagnosticDescriptor ForDebug(
-        string message,
-        DiagnosticSeverity severity = DiagnosticSeverity.Info
-    ) => new(
+    public static DiagnosticDescriptor ForDebug { get; } =  new(
         id: "AAG9000",
         title: "Created for debug only",
-        messageFormat: message,
+        messageFormat: "Thing you provided is {0}",
         category: "Debug",
-        defaultSeverity: severity,
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
 }
