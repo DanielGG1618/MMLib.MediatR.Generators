@@ -7,15 +7,21 @@ namespace AutoApiGen.Wrappers;
 internal class EndpointContractDeclarationSyntax
 {
     private readonly ClassDeclarationSyntax _class;
+    private readonly AttributeSyntax _attribute;
 
     public static EndpointContractDeclarationSyntax Wrap(ClassDeclarationSyntax @class)
     {
         //TODO add validation logic if possible
         //such a class should 
-        // - [ ] have exactly one attribute with name from EndpointAttributeNames
+        // - [x] have exactly one attribute with name from EndpointAttributeNames
         // - [ ] implement mediator IRequest
         // - [ ] be a command or query
-        return new EndpointContractDeclarationSyntax(@class);
+
+        var attribute = @class.Attributes().Single(attr =>
+            EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+        );
+
+        return new EndpointContractDeclarationSyntax(@class, attribute);
     }
     
     //TODO add static method for validation
@@ -41,6 +47,9 @@ internal class EndpointContractDeclarationSyntax
             : className;
     }
 
-    private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class) => 
+    private EndpointContractDeclarationSyntax(ClassDeclarationSyntax @class, AttributeSyntax attribute)
+    {
         _class = @class;
+        _attribute = attribute;
+    }
 }

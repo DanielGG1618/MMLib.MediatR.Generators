@@ -18,7 +18,7 @@ internal class IncrementalGenerator : IIncrementalGenerator
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
                 node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
-                && @class.HasAttributeWithAnyNameFrom(EndpointAttributeNames),
+                && @class.HasAttributeWithNameFrom(EndpointAttributeNames),
             
             transform: static (syntaxContext, _) =>
                 EndpointContractDeclarationSyntax.Wrap((ClassDeclarationSyntax)syntaxContext.Node)
