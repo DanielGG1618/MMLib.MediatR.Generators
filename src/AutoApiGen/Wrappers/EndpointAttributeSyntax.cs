@@ -23,7 +23,12 @@ public class EndpointAttributeSyntax
     
     private EndpointAttributeSyntax(AttributeSyntax attribute)
     {
-        _route = RouteString.Wrap(attribute.FirstConstructorArgument());
+        _route = RouteString.Wrap(
+            attribute.ArgumentList?.Arguments
+                .First().Expression is LiteralExpressionSyntax literalExpression
+                ? literalExpression.Token.ValueText
+                : ""
+        );
         _name = attribute.Name.NameOrDefault();
     }
 }
