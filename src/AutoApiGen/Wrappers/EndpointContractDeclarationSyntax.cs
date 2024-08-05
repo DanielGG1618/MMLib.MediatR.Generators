@@ -8,65 +8,54 @@ namespace AutoApiGen.Wrappers;
 internal class EndpointContractDeclarationSyntax
 {
     private readonly TypeDeclarationSyntax _type;
+    private readonly AttributeSyntax _attribute;    
+    private readonly RouteString _route;
     
-    public AttributeSyntax Attribute { get; }
-    public RouteString Route { get; }
-
-    public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type)
-    {
-        //TODO add validation logic if possible
-        //such a class should 
-        // - [x] have exactly one attribute with name from EndpointAttributeNames
-        // - [x] implement mediator IRequest
-
-        var attribute = type.Attributes().Single(attr =>
-            EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
-        );
-        
-        var a = type.BaseList?.Types.Select(baseType => baseType.Type);
-
-        if (type.BaseList?.Types.Any(baseType =>
-                baseType.Type is SimpleNameSyntax
-                {
-                    Identifier.Text: "IRequest" or "ICommand" or "IQuery"
-                }
-            ) is false)
-            throw new InvalidOperationException("Endpoint contract should implement IRequest");
-
-        return new EndpointContractDeclarationSyntax(type, attribute);
-    }
+    public string BaseRoute => 
+        _route.BaseRoute;
     
-    //TODO add static method for validation
+    public string RelationalRoute => 
+        _route.RelationalRoute;
+
+    public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type) =>
+        IsValid(type)
+            ? new EndpointContractDeclarationSyntax(
+                type,
+                attribute: type.Attributes().Single(attr =>
+                    EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+                )
+            )
+            : throw new InvalidOperationException("Endpoint contract should implement IRequest");
+
+    public static bool IsValid(TypeDeclarationSyntax type) =>
+        type.BaseList?.Types.Any(baseType =>
+            baseType.Type is SimpleNameSyntax
+            {
+                Identifier.Text: "IRequest" or "ICommand" or "IQuery"
+            }
+        ) is true;
 
     public string GetHttpMethod()
     {
-        var name = Attribute.Name.NameOrDefault();
+        var name = _attribute.Name.NameOrDefault();
 
         return name.Remove(name.Length - "Endpoint".Length);
     }
 
-    public string GetMethodName()
-    {
-        if (_type.Parent is TypeDeclarationSyntax type)
-            return type.Name();
-
-        var className = _type.Name();
-        
-        return Suffixes.SingleOrDefault(suffix => className.EndsWith(suffix)) is { } matchingSuffix
-            ? className.Remove(className.Length - matchingSuffix.Length)
-            : className;
-    }
-
-    public string BaseRoute => 
-        Route.BaseRoute;
+    public string GetMethodName() =>
+        _type.Parent is TypeDeclarationSyntax parent 
+            ? parent.Name()
+            : Suffixes.SingleOrDefault(suffix => _type.Name().EndsWith(suffix)) is {} matchingSuffix
+                ? _type.Name().Remove(_type.Name().Length - matchingSuffix.Length)
+                : _type.Name();
 
     public string GetControllerName() =>
-        Route.BaseRoute.WithCapitalFirstLetter() + "Controller";
+        _route.BaseRoute.WithCapitalFirstLetter() + "Controller";
     
     private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, AttributeSyntax attribute)
     {
         _type = type;
-        Attribute = attribute;
-        Route = RouteString.Wrap(Attribute.FirstConstructorArgument());
+        _attribute = attribute;
+        _route = RouteString.Wrap(_attribute.FirstConstructorArgument());
     }
 }
