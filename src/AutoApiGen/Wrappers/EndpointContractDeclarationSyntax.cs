@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AutoApiGen.Extensions;
+﻿using AutoApiGen.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static AutoApiGen.StaticData;
 
@@ -8,24 +7,25 @@ namespace AutoApiGen.Wrappers;
 internal class EndpointContractDeclarationSyntax
 {
     private readonly TypeDeclarationSyntax _type;
-    private readonly AttributeSyntax _attribute;    
-    private readonly RouteString _route;
+    private readonly EndpointAttributeSyntax _attribute;   
     
     public string BaseRoute => 
-        _route.BaseRoute;
+        _attribute.BaseRoute;
     
     public string RelationalRoute => 
-        _route.RelationalRoute;
+        _attribute.RelationalRoute;
 
     public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type) =>
         IsValid(type)
             ? new EndpointContractDeclarationSyntax(
                 type,
-                attribute: type.Attributes().Single(attr =>
-                    EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+                attribute: EndpointAttributeSyntax.Wrap(
+                    type.Attributes().Single(attr =>
+                        EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+                    )
                 )
             )
-            : throw new InvalidOperationException("Endpoint contract should implement IRequest");
+            : throw new InvalidOperationException("Provided type is not valid Endpoint Contract");
 
     public static bool IsValid(TypeDeclarationSyntax type) =>
         type.BaseList?.Types.Any(baseType =>
@@ -35,12 +35,8 @@ internal class EndpointContractDeclarationSyntax
             }
         ) is true;
 
-    public string GetHttpMethod()
-    {
-        var name = _attribute.Name.NameOrDefault();
-
-        return name.Remove(name.Length - "Endpoint".Length);
-    }
+    public string GetHttpMethod() =>
+        _attribute.GetHttpMethod();
 
     public string GetMethodName() =>
         _type.Parent is TypeDeclarationSyntax parent 
@@ -50,12 +46,11 @@ internal class EndpointContractDeclarationSyntax
                 : _type.Name();
 
     public string GetControllerName() =>
-        _route.BaseRoute.WithCapitalFirstLetter() + "Controller";
+        BaseRoute.WithCapitalFirstLetter() + "Controller";
     
-    private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, AttributeSyntax attribute)
+    private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, EndpointAttributeSyntax attribute)
     {
         _type = type;
         _attribute = attribute;
-        _route = RouteString.Wrap(_attribute.FirstConstructorArgument());
     }
 }
