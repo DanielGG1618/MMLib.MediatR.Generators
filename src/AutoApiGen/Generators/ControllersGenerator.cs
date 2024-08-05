@@ -42,8 +42,8 @@ internal class ControllersGenerator : IIncrementalGenerator
             var httpMethod = endpoint.GetHttpMethod();
             var methodName = endpoint.GetMethodName();
             
+            var baseRoute = endpoint.BaseRoute;
             var controllerName = endpoint.GetControllerName();
-            var baseRoute = ""; //TODO this has to be implemented somehow
             
             var method = new MethodData(
                 HttpMethod: httpMethod,

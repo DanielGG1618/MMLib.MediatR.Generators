@@ -10,6 +10,7 @@ internal class EndpointContractDeclarationSyntax
     private readonly TypeDeclarationSyntax _type;
     
     public AttributeSyntax Attribute { get; }
+    public RouteString Route { get; }
 
     public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type)
     {
@@ -55,19 +56,17 @@ internal class EndpointContractDeclarationSyntax
             ? className.Remove(className.Length - matchingSuffix.Length)
             : className;
     }
-    
+
+    public string BaseRoute => 
+        Route.BaseRoute;
+
     public string GetControllerName() =>
-        _type.AttributeLists.SelectMany(list => list.Attributes)
-            .Single(attr =>
-                EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
-            ).ArgumentList?.Arguments
-            .First().Expression is LiteralExpressionSyntax literal
-            ? literal.Token.ValueText.WithCapitalFirstLetter() + "Controller"
-            : "ThisShitReturnedNull"; //TODO
+        Route.BaseRoute.WithCapitalFirstLetter() + "Controller";
     
     private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, AttributeSyntax attribute)
     {
         _type = type;
         Attribute = attribute;
+        Route = RouteString.Wrap(Attribute.FirstConstructorArgument());
     }
 }
