@@ -17,10 +17,9 @@ namespace TempConsumer;
 {{- if base_route != "" -}}
     [Route("{{ base_route }}")]
 {{- end -}}
-public class {{ controller.name }}(IMediator mediator) : ApiControllerBase
-{
-    private ISender _mediator = mediator;
-    
+public class {{ controller.name }}(ISender mediator) 
+    : ApiControllerBase(mediator)
+{    
     {{- for method in controller.methods }}
         {{ if method.comment }}
             /// <summary>

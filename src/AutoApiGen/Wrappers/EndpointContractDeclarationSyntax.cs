@@ -70,5 +70,4 @@ internal class EndpointContractDeclarationSyntax
         _type = type;
         Attribute = attribute;
     }
-
 }
