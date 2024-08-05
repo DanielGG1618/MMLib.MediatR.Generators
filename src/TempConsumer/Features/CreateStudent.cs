@@ -5,7 +5,7 @@ namespace TempConsumer.Features;
 
 public record Student(string Name);
 
-[PostEndpoint("students")] //Fails if '/' is there 
+[PostEndpoint("students")] 
 public record CreateStudentCommand(string Name) : IRequest<Student>;
 
 public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Student>

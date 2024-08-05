@@ -29,7 +29,11 @@ public class {{ controller.name }}(ISender mediator)
         {{- for attribute in method.attributes -}}
             {{ attribute }}
         {{ end }}
-        [Http{{ method.http_method }}]
+        [Http{{ method.http_method }}
+            {{- if method.route != "" -}}
+                ("{{ method.route }}")
+            {{- end -}}
+        ]
         public async Task<IActionResult> {{ method.name }}(
         {{- for param in method.parameters -}}
             {{ param.attributes }} {{ param.type }} {{ param.name }},

@@ -3,8 +3,8 @@ using AutoApiGen.Attributes;
 
 namespace TempConsumer.Features;
 
-[GetEndpoint("students")] //Fails if '/' is there 
-public record GetStudentQuery(string Name) : IRequest<Student>;
+[GetEndpoint("students/{id}")] 
+public record GetStudentQuery(string Id, string Name) : IRequest<Student>;
 
 public class GetStudentHandler : IRequestHandler<GetStudentQuery, Student>
 {
