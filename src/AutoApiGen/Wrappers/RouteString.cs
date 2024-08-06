@@ -6,17 +6,17 @@ public class RouteString
     private readonly IImmutableList<string> _parts;
 
     public string BaseRoute => _parts[0];
-    public string RelationalRoute { get; }
 
-    public static RouteString Wrap(string @string) => new(@string);
+    public static RouteString Wrap(string @string) => new(
+        @string,
+        parts: @string.Split('/').ToImmutableArray()
+    );
+
+    public string GetRelationalRoute() =>
+        string.Join(separator: "/", _parts.Skip(1));
     
     public static implicit operator string(RouteString routeString) => routeString._string;
-    
-    private RouteString(string @string)
-    {
-        _string = @string;
-        _parts = _string.Split('/').ToImmutableArray();
 
-        RelationalRoute = string.Join(separator: "/", _parts.Skip(1));
-    }
+    private RouteString(string @string, IImmutableList<string> parts) => 
+        (_string, _parts) = (@string, parts);
 }

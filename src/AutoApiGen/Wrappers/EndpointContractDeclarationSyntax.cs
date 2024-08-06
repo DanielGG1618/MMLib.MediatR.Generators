@@ -12,8 +12,8 @@ internal class EndpointContractDeclarationSyntax
     public string BaseRoute => 
         _attribute.BaseRoute;
     
-    public string RelationalRoute => 
-        _attribute.RelationalRoute;
+    public string GetRelationalRoute() => 
+        _attribute.GetRelationalRoute();
     
     public string RequestType => 
         _type.Name();
@@ -60,10 +60,7 @@ internal class EndpointContractDeclarationSyntax
 
     public string GetControllerName() =>
         BaseRoute.WithCapitalFirstLetter() + "Controller";
-    
-    private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, EndpointAttributeSyntax attribute)
-    {
-        _type = type;
-        _attribute = attribute;
-    }
+
+    private EndpointContractDeclarationSyntax(TypeDeclarationSyntax type, EndpointAttributeSyntax attribute) =>
+        (_type, _attribute) = (type, attribute);
 }

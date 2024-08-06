@@ -42,7 +42,7 @@ internal class ControllersGenerator : IIncrementalGenerator
         foreach (var endpoint in endpoints)
         { 
             var httpMethod = endpoint.GetHttpMethod();
-            var route = endpoint.RelationalRoute;
+            var route = endpoint.GetRelationalRoute();
             var methodName = endpoint.GetMethodName();
             var requestType = endpoint.RequestType;
             var responseType = endpoint.GetResponseType();
