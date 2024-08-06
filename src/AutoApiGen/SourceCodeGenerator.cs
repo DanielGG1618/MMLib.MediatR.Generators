@@ -10,26 +10,16 @@ namespace AutoApiGen;
 internal static class SourceCodeGenerator
 {
     public static string Generate(ControllerData controller, ITemplatesProvider templatesProvider) =>
-        Format(
-            RenderWithTemplate(new
-                {
-                    Controller = controller,
-                    controller.BaseRoute
-                },
-                templatesProvider.Get()
-            )
+        RenderWithTemplate(new
+            {
+                Controller = controller,
+                controller.BaseRoute
+            },
+            templatesProvider.Get()
         );
     
     private static string RenderWithTemplate(object obj, Template template) =>
         template.Render(CreateContext(obj));
-
-    private static string Format(string text) =>
-        ((CSharpSyntaxNode)
-            CSharpSyntaxTree
-                .ParseText(text)
-                .GetRoot()
-        ).NormalizeWhitespace(elasticTrivia: true)
-        .ToFullString();
     
     private static TemplateContext CreateContext(object body)
     {
