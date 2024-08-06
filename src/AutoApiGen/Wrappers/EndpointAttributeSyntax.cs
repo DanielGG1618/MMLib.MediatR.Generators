@@ -15,6 +15,7 @@ public class EndpointAttributeSyntax
         IsValid(attribute)
             ? new(attribute)
             : throw new InvalidOperationException("Provided attribute is not valid Endpoint Attribute");
+    
     public static bool IsValid(AttributeSyntax attribute) =>
         StaticData.EndpointAttributeNames.Contains(attribute.Name.NameOrDefault());
     

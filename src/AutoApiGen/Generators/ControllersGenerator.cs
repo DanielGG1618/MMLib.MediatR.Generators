@@ -15,8 +15,10 @@ internal class ControllersGenerator : IIncrementalGenerator
     {
         var provider = context.SyntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) =>
-                node is TypeDeclarationSyntax { AttributeLists.Count: > 0 } @class
-                && @class.HasAttributeWithNameFrom(EndpointAttributeNames),
+                node is TypeDeclarationSyntax { AttributeLists.Count: > 0 } type
+                && type.HasAttributeWithNameFrom(EndpointAttributeNames, out var attribute)
+                && EndpointAttributeSyntax.IsValid(attribute)
+                && EndpointContractDeclarationSyntax.IsValid(type),
             
             transform: static (syntaxContext, _) =>
                 EndpointContractDeclarationSyntax.Wrap((TypeDeclarationSyntax)syntaxContext.Node)

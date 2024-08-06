@@ -15,4 +15,11 @@ internal static class TypeDeclarationSyntaxExtensions
         this TypeDeclarationSyntax type,
         ISet<string> names
     ) => type.Attributes().ContainsAttributeWithNameFrom(names);
+    
+    
+    public static bool HasAttributeWithNameFrom(
+        this TypeDeclarationSyntax type,
+        ISet<string> names,
+        out AttributeSyntax attribute
+    ) => type.Attributes().ContainsAttributeWithNameFrom(names, out attribute);
 }
