@@ -14,6 +14,9 @@ internal class EndpointContractDeclarationSyntax
     
     public string RelationalRoute => 
         _attribute.RelationalRoute;
+    
+    public string RequestType => 
+        _type.Name();
 
     public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type) =>
         IsValid(type)
@@ -44,7 +47,7 @@ internal class EndpointContractDeclarationSyntax
             : Suffixes.SingleOrDefault(suffix => _type.Name().EndsWith(suffix)) is {} matchingSuffix
                 ? _type.Name().Remove(_type.Name().Length - matchingSuffix.Length)
                 : _type.Name();
-
+    
     public string GetControllerName() =>
         BaseRoute.WithCapitalFirstLetter() + "Controller";
     
