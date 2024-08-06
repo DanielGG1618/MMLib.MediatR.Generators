@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoApiGen.Extensions;
 
@@ -22,4 +21,16 @@ internal static class TypeDeclarationSyntaxExtensions
         ISet<string> names,
         out AttributeSyntax attribute
     ) => type.Attributes().ContainsAttributeWithNameFrom(names, out attribute);
+
+    public static IEnumerable<string> GetGenericTypeParametersOfInterface(
+        this TypeDeclarationSyntax type,
+        string interfaceName
+    ) => type.BaseList?.Types
+             .Where(baseType =>
+                 baseType.Type is GenericNameSyntax genericName 
+                 && genericName.Identifier.Text == interfaceName
+             )
+             .SelectMany(baseType => ((GenericNameSyntax)baseType.Type).TypeArgumentList.Arguments)
+             .Select(typeArgument => typeArgument.ToString())
+         ?? [];
 }

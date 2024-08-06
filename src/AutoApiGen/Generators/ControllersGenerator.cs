@@ -45,6 +45,7 @@ internal class ControllersGenerator : IIncrementalGenerator
             var route = endpoint.RelationalRoute;
             var methodName = endpoint.GetMethodName();
             var requestType = endpoint.RequestType;
+            var responseType = endpoint.GetResponseType();
             
             var baseRoute = endpoint.BaseRoute;
             var controllerName = endpoint.GetControllerName();
@@ -56,7 +57,7 @@ internal class ControllersGenerator : IIncrementalGenerator
                 Name: methodName,
                 Parameters: [],
                 RequestType: requestType,
-                ResponseType: "string"
+                ResponseType: responseType
             );
 
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)

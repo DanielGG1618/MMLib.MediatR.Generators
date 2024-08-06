@@ -47,7 +47,17 @@ internal class EndpointContractDeclarationSyntax
             : Suffixes.SingleOrDefault(suffix => _type.Name().EndsWith(suffix)) is {} matchingSuffix
                 ? _type.Name().Remove(_type.Name().Length - matchingSuffix.Length)
                 : _type.Name();
-    
+
+    public string GetResponseType() =>
+        _type.GetGenericTypeParametersOfInterface("IRequest").SingleOrDefault()
+        ?? (
+            _type.GetGenericTypeParametersOfInterface("ICommand").SingleOrDefault()
+            ?? (
+                _type.GetGenericTypeParametersOfInterface("IQuery").SingleOrDefault()
+                ?? throw new InvalidOperationException("Response type is not specified")
+            )
+        );
+
     public string GetControllerName() =>
         BaseRoute.WithCapitalFirstLetter() + "Controller";
     
