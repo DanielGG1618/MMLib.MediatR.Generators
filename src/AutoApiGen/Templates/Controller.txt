@@ -14,37 +14,35 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TempConsumer;
 
-{{- if base_route != "" -}}
+{{ if base_route != "" -}}
     [Route("{{ base_route }}")]
-{{- end -}}
+{{- end }}
 public class {{ controller.name }}(ISender mediator) 
     : ApiControllerBase(mediator)
 {    
-    {{- for method in controller.methods }}
-        {{ if method.comment }}
-            /// <summary>
-            /// {{ method.comment }}
-            /// </summary>
-        {{ end }}
-        {{- for attribute in method.attributes -}}
-            {{ attribute }}
-        {{ end }}
-        [Http{{ method.http_method }}
-            {{- if method.route != "" -}}
-                ("{{ method.route }}")
-            {{- end -}}
-        ]
-        public async Task<IActionResult> {{ method.name }}(
-        {{- for param in method.parameters -}}
-            {{ param.attributes }} {{ param.type }} {{ param.name }},
-        {{ end }}
-            CancellationToken cancellationToken
-        ) 
-        {
-            throw new NotImplementedException();
-            //Body will be added later
-            //Response type is {{ method.response_type }}
-            //Request type is {{ method.request_type }}
-        }
+    {{- for method in controller.methods -}}
+    {{ if method.comment -}}
+        /// <summary>
+        /// {{ method.comment }}
+        /// </summary>
+    {{- end }}
+    [Http{{ method.http_method }}
+        {{- if method.route != "" -}}
+            ("{{ method.route }}")
+        {{- end -}}
+    ]
+    public async Task<IActionResult> {{ method.name }}(
+    {{- for param in method.parameters -}}
+        {{ param.attributes }} {{ param.type }} {{ param.name }},
+    {{ end }}
+        {{ method.request_type }} request,
+        CancellationToken cancellationToken
+    ) 
+    {
+        throw new NotImplementedException();
+        //Body will be added later
+        //Response type is {{ method.response_type }}
+        //Request type is {{ method.request_type }}
+    }
     {{ end }}
 }
