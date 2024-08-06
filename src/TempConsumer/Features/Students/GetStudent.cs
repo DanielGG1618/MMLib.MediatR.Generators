@@ -1,7 +1,7 @@
-﻿using MediatR;
-using AutoApiGen.Attributes;
+﻿using AutoApiGen.Attributes;
+using MediatR;
 
-namespace TempConsumer.Features;
+namespace TempConsumer.Features.Students;
 
 [GetEndpoint("students/{id}")] 
 public record GetStudentQuery(string Id, string Name) : IRequest<Student>;

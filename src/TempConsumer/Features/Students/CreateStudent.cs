@@ -1,7 +1,7 @@
-﻿using MediatR;
-using AutoApiGen.Attributes;
+﻿using AutoApiGen.Attributes;
+using MediatR;
 
-namespace TempConsumer.Features;
+namespace TempConsumer.Features.Students;
 
 public record Student(string Name);
 
