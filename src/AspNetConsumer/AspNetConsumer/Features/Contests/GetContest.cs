@@ -1,7 +1,7 @@
-﻿using MediatR;
-using AutoApiGen.Attributes;
+﻿using AutoApiGen.Attributes;
+using MediatR;
 
-namespace TempConsumer.Features.Contests;
+namespace AspNetConsumer.Features.Contests;
 
 public static class GetContest
 {
