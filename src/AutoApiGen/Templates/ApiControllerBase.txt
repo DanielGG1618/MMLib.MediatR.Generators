@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TempConsumer;
+namespace AutoApiGen.Models;
 
 [ApiController]
 public abstract class ApiControllerBase(ISender mediator) : ControllerBase

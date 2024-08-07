@@ -10,8 +10,7 @@ internal static class SourceCodeGenerator
     public static string Generate(ControllerData controller, ITemplatesProvider templatesProvider) =>
         RenderWithTemplate(new
             {
-                Controller = controller,
-                controller.BaseRoute
+                Controller = controller
             },
             templatesProvider.Get()
         );

@@ -46,7 +46,8 @@ internal class ControllersGenerator : IIncrementalGenerator
             var methodName = endpoint.GetMethodName();
             var requestType = endpoint.GetRequestType();
             var responseType = endpoint.GetResponseType();
-            
+
+            var @namespace = $"{endpoint.GetRootNamespace()}.Controllers";
             var baseRoute = endpoint.BaseRoute;
             var controllerName = endpoint.GetControllerName();
             
@@ -63,6 +64,7 @@ internal class ControllersGenerator : IIncrementalGenerator
             controllers[controllerName] = controllers.TryGetValue(controllerName, out var controller)
                 ? controller with { Methods = [method, ..controller.Methods] }
                 : new ControllerData(
+                    @namespace,
                     baseRoute,
                     controllerName,
                     [method]

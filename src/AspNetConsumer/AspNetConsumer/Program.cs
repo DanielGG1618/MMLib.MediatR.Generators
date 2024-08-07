@@ -25,6 +25,4 @@ app.MapControllers();
 
 app.Run();
 
-Console.Read();
-
-var a = TempConsumer.ContestsController.Empty;
+//var a = new ContestsController();
