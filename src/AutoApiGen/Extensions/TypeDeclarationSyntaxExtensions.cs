@@ -27,7 +27,7 @@ internal static class TypeDeclarationSyntaxExtensions
         string interfaceName
     ) => type.BaseList?.Types
              .Where(baseType =>
-                 baseType.Type is GenericNameSyntax genericName 
+                 baseType.Type is GenericNameSyntax genericName
                  && genericName.Identifier.Text == interfaceName
              )
              .SelectMany(baseType => ((GenericNameSyntax)baseType.Type).TypeArgumentList.Arguments)
@@ -36,7 +36,7 @@ internal static class TypeDeclarationSyntaxExtensions
     
     public static string GetFullName(this TypeDeclarationSyntax type)
     {
-        var pathParts = new List<string>();
+        var pathParts = new List<string>(capacity: 4);
         
         for (var current = type.Parent; current is not null and not CompilationUnitSyntax; current = current.Parent)
         {
@@ -50,10 +50,9 @@ internal static class TypeDeclarationSyntaxExtensions
             );
         }
         
-        
         pathParts.Reverse();
         pathParts.Add(type.Identifier.Text);
         
-        return string.Join(".", pathParts);
+        return string.Join(separator: ".", pathParts);
     }
 }

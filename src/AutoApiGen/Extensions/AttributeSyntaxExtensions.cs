@@ -7,7 +7,7 @@ public static class AttributeSyntaxExtensions
     public static bool ContainsAttributeWithNameFrom(
         this IEnumerable<AttributeSyntax> attributes,
         ISet<string> names
-    ) => attributes.Any(attribute => names.Contains(attribute.Name.NameOrDefault()));
+    ) => attributes.Any(attribute => names.Contains(attribute.Name.ToString()));
 
 
     public static bool ContainsAttributeWithNameFrom(
@@ -16,7 +16,7 @@ public static class AttributeSyntaxExtensions
         out AttributeSyntax attribute
     ) => (attribute =
             attributes.FirstOrDefault(attribute =>
-                names.Contains(attribute.Name.NameOrDefault())
+                names.Contains(attribute.Name.ToString())
             )!
         ) is not null;
 }

@@ -20,12 +20,12 @@ public class EndpointAttributeSyntax
                         ? literalExpression.Token.ValueText
                         : ""
                 ),
-                name: attribute.Name.NameOrDefault()
+                name: attribute.Name.ToString()
             )
             : throw new InvalidOperationException("Provided attribute is not valid Endpoint Attribute");
     
     public static bool IsValid(AttributeSyntax attribute) =>
-        StaticData.EndpointAttributeNames.Contains(attribute.Name.NameOrDefault());
+        StaticData.EndpointAttributeNames.Contains(attribute.Name.ToString());
     
     public string GetRelationalRoute() => 
         _route.GetRelationalRoute();

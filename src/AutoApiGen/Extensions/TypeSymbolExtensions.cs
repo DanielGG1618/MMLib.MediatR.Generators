@@ -4,13 +4,15 @@ namespace AutoApiGen.Extensions;
 
 internal static class TypeSymbolExtensions
 {
-    public static bool IsController(this ITypeSymbol? typeSymbol) =>
-        typeSymbol?.GetAttributes().Any(a => a.AttributeClass!.Name == "ApiControllerAttribute") is true;
+    public static bool IsController(this ITypeSymbol typeSymbol) =>
+        typeSymbol.GetAttributes().Any(attribute =>
+            attribute.AttributeClass!.Name is "ApiControllerAttribute"
+        );
     
     public static IEnumerable<IPropertySymbol> Properties(this ITypeSymbol symbol) =>
         symbol
             .Members()
-            .Where(x => x.Kind is SymbolKind.Property)
+            .Where(member => member.Kind is SymbolKind.Property)
             .OfType<IPropertySymbol>();
 
     private static IEnumerable<ISymbol> Members(this ITypeSymbol type) => 

@@ -21,7 +21,7 @@ internal class EndpointContractDeclarationSyntax
                 type,
                 attribute: EndpointAttributeSyntax.Wrap(
                     type.Attributes().Single(attr =>
-                        EndpointAttributeNames.Contains(attr.Name.NameOrDefault())
+                        EndpointAttributeNames.Contains(attr.Name.ToString())
                     )
                 )
             )

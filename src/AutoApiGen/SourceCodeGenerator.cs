@@ -1,7 +1,5 @@
 ﻿using AutoApiGen.DataObjects;
 using AutoApiGen.TemplatesProcessing;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Scriban;
 using Scriban.Runtime;
 
