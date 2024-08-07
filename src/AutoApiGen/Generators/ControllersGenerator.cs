@@ -44,7 +44,7 @@ internal class ControllersGenerator : IIncrementalGenerator
             var httpMethod = endpoint.GetHttpMethod();
             var route = endpoint.GetRelationalRoute();
             var methodName = endpoint.GetMethodName();
-            var requestType = endpoint.RequestType;
+            var requestType = endpoint.GetRequestType();
             var responseType = endpoint.GetResponseType();
             
             var baseRoute = endpoint.BaseRoute;

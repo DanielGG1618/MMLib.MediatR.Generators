@@ -14,9 +14,6 @@ internal class EndpointContractDeclarationSyntax
     
     public string GetRelationalRoute() => 
         _attribute.GetRelationalRoute();
-    
-    public string RequestType => 
-        _type.Name();
 
     public static EndpointContractDeclarationSyntax Wrap(TypeDeclarationSyntax type) =>
         IsValid(type)
@@ -48,6 +45,9 @@ internal class EndpointContractDeclarationSyntax
                 ? _type.Name().Remove(_type.Name().Length - matchingSuffix.Length)
                 : _type.Name();
 
+    public string GetRequestType() =>
+        _type.GetFullName();
+    
     public string GetResponseType() =>
         _type.GetGenericTypeParametersOfInterface("IRequest").SingleOrDefault()
         ?? (

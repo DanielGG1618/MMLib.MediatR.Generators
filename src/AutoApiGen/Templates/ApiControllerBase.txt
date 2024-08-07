@@ -6,5 +6,5 @@ namespace TempConsumer;
 [ApiController]
 public abstract class ApiControllerBase(ISender mediator) : ControllerBase
 {
-    private readonly ISender Mediator = mediator;
+    protected readonly ISender Mediator = mediator;
 }

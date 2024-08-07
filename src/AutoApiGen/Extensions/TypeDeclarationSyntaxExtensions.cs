@@ -33,4 +33,27 @@ internal static class TypeDeclarationSyntaxExtensions
              .SelectMany(baseType => ((GenericNameSyntax)baseType.Type).TypeArgumentList.Arguments)
              .Select(typeArgument => typeArgument.ToString())
          ?? [];
+    
+    public static string GetFullName(this TypeDeclarationSyntax type)
+    {
+        var pathParts = new List<string>();
+        
+        for (var current = type.Parent; current is not null and not CompilationUnitSyntax; current = current.Parent)
+        {
+            pathParts.Add(current switch
+                {
+                    NamespaceDeclarationSyntax @namespace => @namespace.Name.ToString(),
+                    FileScopedNamespaceDeclarationSyntax @namespace => @namespace.Name.ToString(),
+                    TypeDeclarationSyntax parentType => parentType.Identifier.Text,
+                    _ => throw new ArgumentOutOfRangeException()
+                }
+            );
+        }
+        
+        
+        pathParts.Reverse();
+        pathParts.Add(type.Identifier.Text);
+        
+        return string.Join(".", pathParts);
+    }
 }

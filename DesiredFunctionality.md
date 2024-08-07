@@ -34,16 +34,19 @@ public class StudentsController(IMediator mediator)
     : ApiController(mediator)
 {
     [HttpPost]
-    public async Task<IActionResult> CreateStudent([FromBody] CreateStudentCommand command)
+    public async Task<IActionResult> CreateStudent([FromBody] CreateStudentRequest request)
     {
+        var command = new CreateStudentCommand(request.Name);
         var result = await Mediator.Send(command);
         
         return Created(result);
+        //return CreatedAtAction("GetStudent", "Students", result.Id, result);
     }
     
     [HttpGet("{id:string}")]
     public async Task<IActionResult> GetStudent(string id)
     {
+        var query = new GetStudentQuery(id);
         var result = await Mediator.Send(query);
         
         return Ok(result);
