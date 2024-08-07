@@ -13,7 +13,7 @@ internal static class StaticData
         "OptionsEndpoint",
     };
     
-    public static string[] Suffixes { get; } =
+    public static string[] EndpointContractSuffixes { get; } =
     [
         "Command",
         "Query",

@@ -41,7 +41,7 @@ internal class EndpointContractDeclarationSyntax
     public string GetMethodName() =>
         _type.Parent is TypeDeclarationSyntax parent 
             ? parent.Name()
-            : Suffixes.SingleOrDefault(suffix => _type.Name().EndsWith(suffix)) is {} matchingSuffix
+            : EndpointContractSuffixes.SingleOrDefault(suffix => _type.Name().EndsWith(suffix)) is {} matchingSuffix
                 ? _type.Name().Remove(_type.Name().Length - matchingSuffix.Length)
                 : _type.Name();
 
